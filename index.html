@@ -11,7 +11,7 @@
      crossorigin="anonymous"></script>
     
     <!-- Your Popunder Script -->
-    <script type='text/javascript' src='//pawsdefenseneigh.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js'></script>
+    <script type='text/javascript' src='//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js'></script>
     
     <!-- Adsterra Social Bar -->
     <script type='text/javascript' src='//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js'></script>
@@ -274,6 +274,21 @@
             font-size: 0.8em;
             opacity: 0.8;
         }
+        
+        /* Smartlink ad styles */
+        .smartlink-ad {
+            background: linear-gradient(45deg, #9C27B0, #673AB7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .smartlink-ad:hover {
+            transform: scale(1.02);
+            background: linear-gradient(45deg, #8E24AA, #5E35B1);
+        }
     </style>
 </head>
 <body>
@@ -330,6 +345,13 @@
                     </div>
                 </div>
                 
+                <!-- Smartlink Ad -->
+                <div class="smartlink-ad" id="smartlinkAd" style="display: none;">
+                    <h4>🎁 Exclusive Offer!</h4>
+                    <p>Click to reveal special content</p>
+                    <small>Sponsored Content</small>
+                </div>
+                
                 <!-- Popunder trigger section -->
                 <div style="margin-top: 15px;">
                     <p style="font-size: 0.9em; margin-bottom: 10px; opacity: 0.8;">
@@ -370,6 +392,8 @@
         let countdownComplete = false;
         let popunderShown = false;
         let countdownInterval;
+        const smartlinkUrl = "https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832";
+        const finalDestination = "https://t4tsa.cc/";
         
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -377,6 +401,7 @@
             startCountdown();
             initializeAds();
             initializeSocialBar();
+            setupSmartlink();
         });
         
         function startCountdown() {
@@ -400,6 +425,9 @@
                     
                     // Show ad verification section
                     document.getElementById('adVerification').style.display = 'block';
+                    
+                    // Show smartlink ad
+                    document.getElementById('smartlinkAd').style.display = 'block';
                     
                     // Show fallback ad if AdSense doesn't load
                     setTimeout(function() {
@@ -454,6 +482,39 @@
                     console.log('Adsterra social bar elements not detected');
                 }
             }, 2000);
+        }
+        
+        function setupSmartlink() {
+            // Setup smartlink ad click handler
+            document.getElementById('smartlinkAd').addEventListener('click', function() {
+                triggerSmartlinkAd();
+            });
+        }
+        
+        function triggerSmartlinkAd() {
+            showStatus("Loading advertisement...", "success");
+            
+            // Open smartlink in new tab
+            const adTab = window.open(smartlinkUrl, '_blank');
+            
+            if (adTab) {
+                showStatus("Ad loaded! Please wait 1-2 seconds...", "success");
+                
+                // Auto-check verification after ad loads
+                setTimeout(function() {
+                    document.getElementById('adWatched').checked = true;
+                    adVerified = true;
+                    if (countdownComplete) {
+                        document.getElementById('continueBtn').disabled = false;
+                    }
+                    showStatus("Ad completed! You can now continue to the content.", "success");
+                    
+                    // Focus back on main window
+                    window.focus();
+                }, 2000); // 2 second delay for ad to load
+            } else {
+                showStatus("Ad blocked by browser. Please allow popups.", "error");
+            }
         }
         
         // Popunder functionality
@@ -534,19 +595,32 @@
             }
         });
         
-        // Continue button handler
+        // Continue button handler - Now with smartlink integration
         document.getElementById('continueBtn').addEventListener('click', function() {
             if (countdownComplete && adVerified) {
                 // Show loading state
-                this.innerHTML = 'Redirecting...';
+                this.innerHTML = 'Loading final content...';
                 this.disabled = true;
                 
-                showStatus("Redirecting to Movie Portal...", "success");
+                showStatus("Preparing your content...", "success");
                 
-                // Redirect to your website after a short delay
-                setTimeout(() => {
-                    window.location.href = "https://t4tsa.cc/";
-                }, 2000);
+                // Open smartlink ad first with 1-2 second delay
+                setTimeout(function() {
+                    const finalAdTab = window.open(smartlinkUrl, '_blank');
+                    
+                    if (finalAdTab) {
+                        showStatus("Final ad loading...", "success");
+                        
+                        // Wait 1-2 seconds for ad to load, then navigate to final destination
+                        setTimeout(function() {
+                            window.location.href = finalDestination;
+                        }, 1500); // 1.5 second delay
+                    } else {
+                        // If ad blocked, go directly to destination
+                        showStatus("Ad blocked, redirecting directly...", "error");
+                        window.location.href = finalDestination;
+                    }
+                }, 500);
             } else {
                 showStatus("Please complete the ad verification first.", "error");
             }
