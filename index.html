@@ -78,6 +78,11 @@
             align-items: center; 
             justify-content: center; 
             flex-direction: column;
+            padding: 20px;
+        }
+        .ad-placeholder {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1em;
         }
         .continue-btn { 
             background: linear-gradient(45deg, #FF416C, #FF4B2B); 
@@ -92,6 +97,7 @@
             border: none;
             cursor: pointer;
             font-size: 1.1em;
+            width: 100%;
         }
         .continue-btn:hover {
             transform: scale(1.05);
@@ -206,6 +212,7 @@
             margin: 10px 0;
             font-size: 0.9em;
             transition: all 0.3s ease;
+            width: 100%;
         }
         .popunder-trigger:hover {
             transform: scale(1.05);
@@ -227,6 +234,25 @@
             background: rgba(244, 67, 54, 0.2);
             border: 1px solid rgba(244, 67, 54, 0.5);
         }
+        
+        /* Ad banner styles */
+        .ad-banner {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .ad-banner:hover {
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
@@ -242,7 +268,7 @@
             <p>Your gateway to premium entertainment content</p>
             
             <div class="countdown" id="countdown">15</div>
-            <p>Please wait while we prepare your content...</p>
+            <p id="statusText">Please wait while we prepare your content...</p>
             
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
@@ -260,11 +286,19 @@
                     <div class="ad-notice">
                         <strong>Please watch the ad below to continue</strong>
                     </div>
+                    
+                    <!-- AdSense Ad -->
                     <ins class="adsbygoogle"
-                         style="display:block"
+                         style="display:block; width: 100%; height: 250px;"
                          data-ad-client="ca-pub-4494471028788825"
                          data-ad-slot="1234567890"
-                         data-ad-format="auto"></ins>
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    
+                    <!-- Fallback Ad Banner -->
+                    <div class="ad-banner" onclick="openAd()" style="display: none;" id="fallbackAd">
+                        <div>🎥 SPECIAL OFFER: Click to watch ad and continue!</div>
+                    </div>
                 </div>
                 
                 <!-- Popunder trigger section -->
@@ -278,7 +312,7 @@
                 </div>
                 
                 <!-- Status message -->
-                <div class="status-message" id="popunderStatus" style="display: none;"></div>
+                <div class="status-message" id="popunderStatus"></div>
             </div>
             
             <div class="ad-verification" id="adVerification">
@@ -301,77 +335,132 @@
     </div>
 
     <script>
+        // Countdown variables
         let countdown = 15;
         let adVerified = false;
         let countdownComplete = false;
         let popunderShown = false;
+        let countdownInterval;
         
-        function updateCountdown() {
-            document.getElementById('countdown').textContent = countdown;
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, starting countdown...');
+            startCountdown();
+            initializeAds();
+        });
+        
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const progressBar = document.getElementById('progressBar');
+            const statusText = document.getElementById('statusText');
             
-            // Update progress bar
-            const progress = ((15 - countdown) / 15) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
-            
-            if (countdown <= 0) {
-                countdownComplete = true;
-                document.getElementById('countdown').textContent = "Ready!";
+            countdownInterval = setInterval(function() {
+                countdown--;
+                countdownElement.textContent = countdown;
                 
-                // Show ad verification section
-                document.getElementById('adVerification').style.display = 'block';
+                // Update progress bar
+                const progress = ((15 - countdown) / 15) * 100;
+                progressBar.style.width = `${progress}%`;
                 
-                // Trigger popunder automatically when countdown completes
-                if (!popunderShown) {
-                    triggerPopunder();
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownComplete = true;
+                    countdownElement.textContent = "Ready!";
+                    statusText.textContent = "Countdown complete! Please watch the ad to continue.";
+                    
+                    // Show ad verification section
+                    document.getElementById('adVerification').style.display = 'block';
+                    
+                    // Show fallback ad if AdSense doesn't load
+                    setTimeout(function() {
+                        const adSenseAd = document.querySelector('.adsbygoogle');
+                        if (!adSenseAd || !adSenseAd.innerHTML.trim()) {
+                            document.getElementById('fallbackAd').style.display = 'flex';
+                        }
+                    }, 2000);
+                    
+                    // Trigger popunder automatically when countdown completes
+                    if (!popunderShown) {
+                        triggerPopunder();
+                    }
+                    
+                    // Enable continue button if ad is already verified
+                    if (adVerified) {
+                        document.getElementById('continueBtn').disabled = false;
+                    }
                 }
-                
-                // Enable continue button if ad is already verified
-                if (adVerified) {
-                    document.getElementById('continueBtn').disabled = false;
-                }
-                
-                return;
-            }
-            countdown--;
-            setTimeout(updateCountdown, 1000);
+            }, 1000);
         }
         
-        // Initialize AdSense
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        function initializeAds() {
+            // Initialize AdSense
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                console.log('AdSense initialized');
+            } catch (error) {
+                console.error('AdSense error:', error);
+                document.getElementById('fallbackAd').style.display = 'flex';
+            }
+            
+            // Check if popunder script loaded
+            setTimeout(function() {
+                if (typeof window.popunderTrigger === 'undefined') {
+                    showStatus("Popunder script not loaded. Using fallback ads.", "error");
+                } else {
+                    showStatus("Popunder script loaded successfully!", "success");
+                }
+            }, 3000);
+        }
         
         // Popunder functionality
         function triggerPopunder() {
             if (popunderShown) return;
             
             try {
-                // The external popunder script should handle this automatically
-                // But we'll also try manual methods
+                showStatus("Triggering popunder ads...", "success");
                 
-                // Method 1: Let the external script handle it
-                showStatus("Popunder should trigger automatically...", "success");
-                
-                // Method 2: Manual fallback
-                setTimeout(() => {
-                    try {
-                        const popunderWindow = window.open('', '_blank', 'width=600,height=400');
-                        if (popunderWindow) {
+                // Method 1: Try external script function
+                if (typeof window.popunderTrigger === 'function') {
+                    window.popunderTrigger();
+                    showStatus("Popunder triggered via script!", "success");
+                } 
+                // Method 2: Manual popunder
+                else {
+                    showStatus("Using manual popunder method...", "success");
+                    const popunderWindow = window.open('', '_blank', 'width=600,height=400,left=100,top=100');
+                    if (popunderWindow) {
+                        setTimeout(() => {
+                            popunderWindow.location.href = 'https://example.com';
                             setTimeout(() => {
-                                popunderWindow.location.href = 'https://example.com';
-                                setTimeout(() => {
-                                    window.focus();
-                                    showStatus("Popunder opened successfully!", "success");
-                                }, 100);
-                            }, 500);
-                        }
-                    } catch (error) {
-                        showStatus("Popunder blocked. Please allow popups.", "error");
+                                window.focus();
+                                showStatus("Manual popunder opened!", "success");
+                            }, 100);
+                        }, 500);
+                    } else {
+                        showStatus("Popunder blocked by browser. Please allow popups.", "error");
                     }
-                }, 1000);
-                
+                }
                 popunderShown = true;
             } catch (error) {
                 console.error("Popunder error:", error);
-                showStatus("Error showing popunder.", "error");
+                showStatus("Error showing popunder. Please use manual button.", "error");
+            }
+        }
+        
+        // Fallback ad function
+        function openAd() {
+            const adWindow = window.open('https://example.com', '_blank');
+            if (adWindow) {
+                showStatus("Ad opened in new tab! Please watch it and return.", "success");
+                // Auto-check verification after delay
+                setTimeout(function() {
+                    document.getElementById('adWatched').checked = true;
+                    adVerified = true;
+                    if (countdownComplete) {
+                        document.getElementById('continueBtn').disabled = false;
+                    }
+                    showStatus("Thank you for watching the ad! You can now continue.", "success");
+                }, 5000);
             }
         }
         
@@ -382,12 +471,7 @@
             statusEl.className = `status-message status-${type}`;
             statusEl.style.display = 'block';
             
-            // Auto-hide success messages
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusEl.style.display = 'none';
-                }, 5000);
-            }
+            console.log(`Status: ${message}`);
         }
         
         // Manual popunder trigger
@@ -402,6 +486,7 @@
             // Enable continue button if countdown is complete and ad is verified
             if (countdownComplete && adVerified) {
                 document.getElementById('continueBtn').disabled = false;
+                showStatus("Ad verified! Click continue to access content.", "success");
             }
         });
         
@@ -409,13 +494,17 @@
         document.getElementById('continueBtn').addEventListener('click', function() {
             if (countdownComplete && adVerified) {
                 // Show loading state
-                this.innerHTML = 'Redirecting... <div class="loading-dots" style="display:inline-block; width:40px; height:20px; margin-left:10px;"><div></div><div></div><div></div><div></div></div>';
+                this.innerHTML = 'Redirecting...';
                 this.disabled = true;
+                
+                showStatus("Redirecting to Movie Portal...", "success");
                 
                 // Redirect to your website after a short delay
                 setTimeout(() => {
                     window.location.href = "https://t4tsa.cc/";
-                }, 1500);
+                }, 2000);
+            } else {
+                showStatus("Please complete the ad verification first.", "error");
             }
         });
         
@@ -425,9 +514,6 @@
                 setTimeout(triggerPopunder, 1000);
             }
         });
-        
-        // Start the countdown
-        updateCountdown();
     </script>
 </body>
 </html>
