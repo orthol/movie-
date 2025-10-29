@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Premium Movie Access - Loading...</title>
+    <meta name="description" content="Exclusive access to premium movies and entertainment content">
+    
+    <!-- 🔥 YOUR ADSENSE CODE -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
+     crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .countdown {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .ad-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ad-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+        
+        .ad-unit {
+            width: 100%;
+            min-height: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(45deg, #FF416C, #FF4B2B);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 25px 0 15px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 75, 43, 0.3);
+        }
+        
+        .footer {
+            margin-top: 20px;
+            opacity: 0.7;
+            font-size: 0.85em;
+        }
+        
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🎬 Premium Access</h1>
+            <p class="subtitle">Your exclusive movie portal is loading...</p>
+            
+            <div class="loader"></div>
+            
+            <div class="countdown" id="countdown">Loading...</div>
+            <p>Please wait while we prepare your content</p>
+            
+            <!-- Ad Container 1 - Display Ad -->
+            <div class="ad-container">
+                <div class="ad-label">Sponsored Content</div>
+                <div class="ad-unit" id="adUnit1">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-4494471028788825"
+                         data-ad-slot="1234567890"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                </div>
+            </div>
+            
+            <!-- Ad Container 2 - In-Article Ad -->
+            <div class="ad-container">
+                <div class="ad-label">Recommended For You</div>
+                <div class="ad-unit">
+                    <ins class="adsbygoogle"
+                         style="display:block; text-align:center;"
+                         data-ad-layout="in-article"
+                         data-ad-format="fluid"
+                         data-ad-client="ca-pub-4494471028788825"
+                         data-ad-slot="0987654321"></ins>
+                </div>
+            </div>
+            
+            <a href="#" class="continue-btn" id="continueBtn" style="display: none;">
+                🎥 Continue to Movies
+            </a>
+            
+            <div class="footer">
+                <p>By continuing, you agree to our Terms of Service</p>
+                <p>This site contains advertisements</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 🔧 CONFIGURATION - Set via Environment Variables
+        // Default values (will be overridden by Netlify env vars)
+        const DEFAULT_REDIRECT_URL = "https://t.me/halowbot";
+        const DEFAULT_DELAY_SECONDS = 8;
+        
+        // Get configuration from environment or use defaults
+        const REDIRECT_URL = window.redirectUrl || DEFAULT_REDIRECT_URL;
+        const DELAY_SECONDS = window.delaySeconds || DEFAULT_DELAY_SECONDS;
+        
+        // Initialize
+        let countdown = DELAY_SECONDS;
+        let countdownActive = true;
+        
+        const countdownElement = document.getElementById('countdown');
+        const continueBtn = document.getElementById('continueBtn');
+        const loader = document.querySelector('.loader');
+        
+        // Set the redirect URL for the button
+        continueBtn.href = REDIRECT_URL;
+        
+        // Initialize AdSense ads
+        function initializeAds() {
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                console.log('AdSense ads initialized');
+            } catch (error) {
+                console.log('Ad initialization completed');
+            }
+        }
+        
+        // Countdown function
+        function updateCountdown() {
+            if (!countdownActive) return;
+            
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                countdownElement.textContent = "Ready!";
+                loader.style.display = 'none';
+                continueBtn.style.display = 'inline-block';
+                countdownActive = false;
+                
+                // Auto-redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = REDIRECT_URL;
+                }, 3000);
+                
+                return;
+            }
+            
+            countdown--;
+            setTimeout(updateCountdown, 1000);
+        }
+        
+        // Start the experience
+        setTimeout(() => {
+            loader.style.display = 'none';
+            initializeAds();
+            updateCountdown();
+        }, 1000);
+        
+        // Popunder ad for extra revenue
+        setTimeout(() => {
+            try {
+                window.open(REDIRECT_URL, '_blank').blur();
+                window.focus();
+            } catch (e) {
+                // Popup blocked, continue normally
+            }
+        }, 4000);
+        
+        // Force redirect after maximum time (fallback)
+        setTimeout(() => {
+            if (countdownActive) {
+                window.location.href = REDIRECT_URL;
+            }
+        }, (DELAY_SECONDS + 10) * 1000);
+        
+        // Log configuration for debugging
+        console.log('Configuration:', {
+            redirectUrl: REDIRECT_URL,
+            delaySeconds: DELAY_SECONDS
+        });
+    </script>
+</body>
+</html>
