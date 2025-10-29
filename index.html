@@ -10,8 +10,11 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
      crossorigin="anonymous"></script>
     
+    <!-- Your Popunder Script -->
+    <script type='text/javascript' src='//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js'></script>
+    
     <style>
-        /* Add navigation styles */
+        /* Navigation styles */
         .nav {
             position: absolute;
             top: 20px;
@@ -29,7 +32,7 @@
             opacity: 1;
         }
         
-        /* Keep your existing styles */
+        /* Base styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -192,70 +195,37 @@
             font-size: 0.9em;
         }
         
-        /* Popunder alternatives */
-        .ad-alternative {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-        }
-        .ad-link {
-            display: block;
+        /* Popunder trigger button */
+        .popunder-trigger {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
+            border: none;
             padding: 12px 20px;
             border-radius: 25px;
-            text-decoration: none;
+            cursor: pointer;
             margin: 10px 0;
+            font-size: 0.9em;
             transition: all 0.3s ease;
         }
-        .ad-link:hover {
+        .popunder-trigger:hover {
             transform: scale(1.05);
             background: linear-gradient(45deg, #45a049, #4CAF50);
         }
         
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
+        /* Status message */
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
         }
-        .modal-btn-primary {
-            background: #667eea;
-            color: white;
+        .status-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
         }
-        .modal-btn-secondary {
-            background: #ccc;
-            color: #333;
+        .status-error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
         }
     </style>
 </head>
@@ -297,22 +267,18 @@
                          data-ad-format="auto"></ins>
                 </div>
                 
-                <!-- Alternative ad methods -->
-                <div class="ad-alternative">
-                    <p style="font-size: 0.9em; margin-bottom: 15px; opacity: 0.8;">
-                        <strong>Browser blocked popup? Use these alternatives:</strong>
+                <!-- Popunder trigger section -->
+                <div style="margin-top: 15px;">
+                    <p style="font-size: 0.9em; margin-bottom: 10px; opacity: 0.8;">
+                        Click below to trigger popunder ads:
                     </p>
-                    
-                    <!-- Method 1: Direct link -->
-                    <a href="#" class="ad-link" id="directAdLink">
-                        Click to View Advertisement
-                    </a>
-                    
-                    <!-- Method 2: Redirect method -->
-                    <button class="continue-btn" style="background:linear-gradient(45deg, #FF9800, #F57C00); margin:10px 0;" id="redirectAd">
-                        View Ad in New Tab
+                    <button class="popunder-trigger" id="manualPopunder">
+                        Show Popunder Ad
                     </button>
                 </div>
+                
+                <!-- Status message -->
+                <div class="status-message" id="popunderStatus" style="display: none;"></div>
             </div>
             
             <div class="ad-verification" id="adVerification">
@@ -334,32 +300,11 @@
         </div>
     </div>
 
-    <!-- Modal for direct ad viewing -->
-    <div class="modal" id="adModal">
-        <div class="modal-content">
-            <h3 style="color: #333; margin-bottom: 15px;">Advertisement</h3>
-            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 15px 0; min-height: 200px; display: flex; align-items: center; justify-content: center;">
-                <p style="color: #666;">Advertisement content would be displayed here</p>
-            </div>
-            <p style="color: #666; font-size: 0.9em; margin: 15px 0;">
-                Please watch this ad for at least 10 seconds to continue
-            </p>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="closeAd">
-                    Close
-                </button>
-                <button class="modal-btn modal-btn-primary" id="adWatchedBtn">
-                    I Watched the Ad
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         let countdown = 15;
         let adVerified = false;
         let countdownComplete = false;
-        let adWatchTimer = null;
+        let popunderShown = false;
         
         function updateCountdown() {
             document.getElementById('countdown').textContent = countdown;
@@ -375,8 +320,10 @@
                 // Show ad verification section
                 document.getElementById('adVerification').style.display = 'block';
                 
-                // Try to show popunder (will likely be blocked)
-                tryShowPopunder();
+                // Trigger popunder automatically when countdown completes
+                if (!popunderShown) {
+                    triggerPopunder();
+                }
                 
                 // Enable continue button if ad is already verified
                 if (adVerified) {
@@ -392,77 +339,60 @@
         // Initialize AdSense
         (adsbygoogle = window.adsbygoogle || []).push({});
         
-        // Try to show popunder (will likely be blocked by browsers)
-        function tryShowPopunder() {
+        // Popunder functionality
+        function triggerPopunder() {
+            if (popunderShown) return;
+            
             try {
-                // This will almost certainly be blocked
-                const popunder = window.open('', '_blank', 'width=600,height=400');
-                if (popunder) {
-                    setTimeout(() => {
-                        popunder.location.href = 'https://example.com/ad';
-                        setTimeout(() => window.focus(), 100);
-                    }, 500);
-                }
-            } catch (e) {
-                console.log('Popunder blocked by browser');
+                // The external popunder script should handle this automatically
+                // But we'll also try manual methods
+                
+                // Method 1: Let the external script handle it
+                showStatus("Popunder should trigger automatically...", "success");
+                
+                // Method 2: Manual fallback
+                setTimeout(() => {
+                    try {
+                        const popunderWindow = window.open('', '_blank', 'width=600,height=400');
+                        if (popunderWindow) {
+                            setTimeout(() => {
+                                popunderWindow.location.href = 'https://example.com';
+                                setTimeout(() => {
+                                    window.focus();
+                                    showStatus("Popunder opened successfully!", "success");
+                                }, 100);
+                            }, 500);
+                        }
+                    } catch (error) {
+                        showStatus("Popunder blocked. Please allow popups.", "error");
+                    }
+                }, 1000);
+                
+                popunderShown = true;
+            } catch (error) {
+                console.error("Popunder error:", error);
+                showStatus("Error showing popunder.", "error");
             }
         }
         
-        // Method 1: Direct ad in modal
-        document.getElementById('directAdLink').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('adModal').style.display = 'flex';
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('popunderStatus');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type}`;
+            statusEl.style.display = 'block';
             
-            // Start 10-second timer
-            let seconds = 10;
-            const timerInterval = setInterval(() => {
-                seconds--;
-                document.getElementById('adWatchedBtn').textContent = `I Watched the Ad (${seconds}s)`;
-                if (seconds <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('adWatchedBtn').textContent = 'I Watched the Ad';
-                    document.getElementById('adWatchedBtn').disabled = false;
-                }
-            }, 1000);
-            
-            document.getElementById('adWatchedBtn').disabled = true;
-        });
-        
-        // Method 2: Redirect to ad page
-        document.getElementById('redirectAd').addEventListener('click', function() {
-            // Open ad in new tab
-            const adTab = window.open('https://example.com/ad-page', '_blank');
-            
-            if (adTab) {
-                // Focus back on main window
+            // Auto-hide success messages
+            if (type === 'success') {
                 setTimeout(() => {
-                    window.focus();
-                    
-                    // Auto-check the verification after a delay
-                    setTimeout(() => {
-                        document.getElementById('adWatched').checked = true;
-                        adVerified = true;
-                        if (countdownComplete) {
-                            document.getElementById('continueBtn').disabled = false;
-                        }
-                    }, 5000);
-                }, 100);
+                    statusEl.style.display = 'none';
+                }, 5000);
             }
-        });
+        }
         
-        // Close modal
-        document.getElementById('closeAd').addEventListener('click', function() {
-            document.getElementById('adModal').style.display = 'none';
-        });
-        
-        // Ad watched in modal
-        document.getElementById('adWatchedBtn').addEventListener('click', function() {
-            document.getElementById('adModal').style.display = 'none';
-            document.getElementById('adWatched').checked = true;
-            adVerified = true;
-            if (countdownComplete) {
-                document.getElementById('continueBtn').disabled = false;
-            }
+        // Manual popunder trigger
+        document.getElementById('manualPopunder').addEventListener('click', function() {
+            triggerPopunder();
         });
         
         // Ad verification checkbox handler
@@ -489,20 +419,11 @@
             }
         });
         
-        // Load external popunder script (for networks that might work)
-        function loadPopunderScript() {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = '//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js';
-            script.onerror = () => {
-                console.log('Popunder script failed to load');
-            };
-            document.head.appendChild(script);
-        }
-        
-        // Initialize everything when page loads
-        window.addEventListener('load', function() {
-            loadPopunderScript();
+        // Additional triggers for the popunder script
+        document.addEventListener('click', function() {
+            if (countdownComplete && !popunderShown) {
+                setTimeout(triggerPopunder, 1000);
+            }
         });
         
         // Start the countdown
