@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+  command = "echo 'No build needed'"
+
+[build.environment]
+  REDIRECT_URL = "https://t.me/halowbot"
+  DELAY_SECONDS = "8"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
