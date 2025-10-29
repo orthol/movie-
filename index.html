@@ -55,9 +55,27 @@
             z-index: 10;
         }
         h1 { font-size: 2.2em; margin-bottom: 15px; }
-        .countdown { font-size: 3.5em; margin: 30px 0; color: #ffeb3b; }
-        .ad-container { background: rgba(255,255,255,0.05); padding: 20px; margin: 20px 0; border-radius: 15px; }
-        .ad-unit { min-height: 250px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .countdown { 
+            font-size: 3.5em; 
+            margin: 30px 0; 
+            color: #ffeb3b; 
+            font-weight: bold;
+        }
+        .ad-container { 
+            background: rgba(255,255,255,0.05); 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 15px; 
+        }
+        .ad-unit { 
+            min-height: 250px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column;
+        }
         .continue-btn { 
             background: linear-gradient(45deg, #FF416C, #FF4B2B); 
             color: white; 
@@ -68,44 +86,55 @@
             margin: 25px 0; 
             font-weight: bold;
             transition: transform 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
         }
         .continue-btn:hover {
             transform: scale(1.05);
         }
+        .continue-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
         
-        /* Popunder overlay protection */
-        .popunder-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
+        /* Ad verification styles */
+        .ad-verification {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
             display: none;
+        }
+        .verification-checkbox {
+            display: flex;
             align-items: center;
             justify-content: center;
+            margin: 15px 0;
         }
-        .popunder-content {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 400px;
-            text-align: center;
+        .verification-checkbox input {
+            margin-right: 10px;
+            transform: scale(1.5);
         }
-        .popunder-content h3 {
-            margin-bottom: 15px;
-            color: #667eea;
+        .verification-checkbox label {
+            font-size: 1em;
         }
-        .popunder-content button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #FF416C, #FF4B2B);
+            width: 0%;
+            transition: width 0.5s ease;
         }
         
         /* Loading animation */
@@ -153,14 +182,14 @@
             100% { transform: translate(24px, 0); }
         }
         
-        /* Safe area for clicking */
-        .safe-area {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
+        /* Ad interaction notice */
+        .ad-notice {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -171,16 +200,17 @@
         <a href="terms-of-service.html">Terms</a>
     </div>
 
-    <!-- Safe area to prevent accidental clicks -->
-    <div class="safe-area" id="safeArea"></div>
-
     <div class="container">
         <div class="card">
             <h1>🎬 Movie Portal</h1>
             <p>Your gateway to premium entertainment content</p>
             
             <div class="countdown" id="countdown">15</div>
-            <p>Loading your exclusive access...</p>
+            <p>Please wait while we prepare your content...</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
             
             <div class="loading-dots" style="margin: 20px auto;">
                 <div></div>
@@ -191,6 +221,9 @@
             
             <div class="ad-container">
                 <div class="ad-unit">
+                    <div class="ad-notice">
+                        <strong>Please watch the ad below to continue</strong>
+                    </div>
                     <ins class="adsbygoogle"
                          style="display:block"
                          data-ad-client="ca-pub-4494471028788825"
@@ -199,9 +232,18 @@
                 </div>
             </div>
             
-            <a href="https://t.me/halowbot" class="continue-btn" id="continueBtn" style="display: none;">
+            <div class="ad-verification" id="adVerification">
+                <h3>Ad Verification Required</h3>
+                <p>Please confirm you've watched the advertisement to continue</p>
+                <div class="verification-checkbox">
+                    <input type="checkbox" id="adWatched">
+                    <label for="adWatched">I have watched the advertisement</label>
+                </div>
+            </div>
+            
+            <button class="continue-btn" id="continueBtn" disabled>
                 Access Premium Content 🎥
-            </a>
+            </button>
             
             <div style="margin-top: 20px; opacity: 0.7; font-size: 0.85em;">
                 <p>By continuing, you agree to our <a href="terms-of-service.html" style="color: #ffeb3b;">Terms</a> and <a href="privacy-policy.html" style="color: #ffeb3b;">Privacy Policy</a></p>
@@ -209,39 +251,30 @@
         </div>
     </div>
 
-    <!-- Popunder overlay -->
-    <div class="popunder-overlay" id="popunderOverlay">
-        <div class="popunder-content">
-            <h3>Redirect Notice</h3>
-            <p>You're about to be redirected to an external website. This helps support our free service.</p>
-            <p>You'll be automatically redirected back to Movie Portal in a few seconds.</p>
-            <button id="closeOverlay">Continue</button>
-        </div>
-    </div>
-
     <script>
         let countdown = 15;
-        let popunderTriggered = false;
-        let redirectInProgress = false;
+        let adVerified = false;
+        let countdownComplete = false;
         
         function updateCountdown() {
             document.getElementById('countdown').textContent = countdown;
+            
+            // Update progress bar
+            const progress = ((15 - countdown) / 15) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
             if (countdown <= 0) {
-                document.getElementById('continueBtn').style.display = 'block';
+                countdownComplete = true;
+                document.getElementById('countdown').textContent = "Ready!";
                 
-                // Trigger popunder after countdown
-                if (!popunderTriggered) {
-                    triggerPopunder();
-                    popunderTriggered = true;
+                // Show ad verification section
+                document.getElementById('adVerification').style.display = 'block';
+                
+                // Enable continue button if ad is already verified
+                if (adVerified) {
+                    document.getElementById('continueBtn').disabled = false;
                 }
                 
-                // Set final redirect to your site
-                setTimeout(() => {
-                    if (!redirectInProgress) {
-                        redirectInProgress = true;
-                        window.location.href = "https://t4tsa.cc/";
-                    }
-                }, 2000);
                 return;
             }
             countdown--;
@@ -251,47 +284,23 @@
         // Initialize AdSense
         (adsbygoogle = window.adsbygoogle || []).push({});
         
-        // Popunder functionality
-        function triggerPopunder() {
-            // Show overlay to inform user
-            document.getElementById('popunderOverlay').style.display = 'flex';
+        // Ad verification checkbox handler
+        document.getElementById('adWatched').addEventListener('change', function() {
+            adVerified = this.checked;
             
-            // Simulate popunder behavior with controlled redirect
-            setTimeout(() => {
-                // Open popunder in new window/tab
-                const popunderWindow = window.open('', '_blank');
-                
-                // Close overlay
-                document.getElementById('popunderOverlay').style.display = 'none';
-                
-                // Redirect popunder window to ad (replace with your actual ad URL)
-                if (popunderWindow) {
-                    popunderWindow.location.href = 'https://example.com/ad';
-                    
-                    // Focus back on main window after a short delay
-                    setTimeout(() => {
-                        window.focus();
-                    }, 100);
-                }
-            }, 2000);
-        }
-        
-        // Close overlay
-        document.getElementById('closeOverlay').addEventListener('click', function() {
-            document.getElementById('popunderOverlay').style.display = 'none';
-        });
-        
-        // Safe area click handler
-        document.getElementById('safeArea').addEventListener('click', function(e) {
-            // Only trigger popunder after countdown is complete
-            if (countdown <= 0 && !popunderTriggered) {
-                triggerPopunder();
-                popunderTriggered = true;
+            // Enable continue button if countdown is complete and ad is verified
+            if (countdownComplete && adVerified) {
+                document.getElementById('continueBtn').disabled = false;
             }
         });
         
-        // Start the countdown
-        updateCountdown();
+        // Continue button handler
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            if (countdownComplete && adVerified) {
+                // Redirect to your website
+                window.location.href = "https://t4tsa.cc/";
+            }
+        });
         
         // Load external popunder script after page is fully loaded
         window.addEventListener('load', function() {
@@ -303,10 +312,13 @@
                 console.log('Popunder script loaded successfully');
             };
             script.onerror = function() {
-                console.log('Failed to load popunder script, using fallback');
+                console.log('Failed to load popunder script');
             };
             document.head.appendChild(script);
         });
+        
+        // Start the countdown
+        updateCountdown();
     </script>
 </body>
 </html>
