@@ -13,6 +13,9 @@
     <!-- Your Popunder Script -->
     <script type='text/javascript' src='//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js'></script>
     
+    <!-- Adsterra Social Bar -->
+    <script type='text/javascript' src='//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js'></script>
+    
     <style>
         /* Navigation styles */
         .nav {
@@ -253,6 +256,24 @@
         .ad-banner:hover {
             transform: scale(1.02);
         }
+        
+        /* Social bar container */
+        .social-bar-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        /* Adsterra notification */
+        .adsterra-notice {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -260,6 +281,14 @@
     <div class="nav">
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="terms-of-service.html">Terms</a>
+    </div>
+
+    <!-- Social Bar Container -->
+    <div class="social-bar-container">
+        <div class="adsterra-notice">
+            Follow us for more content!
+        </div>
+        <!-- Adsterra Social Bar will load here -->
     </div>
 
     <div class="container">
@@ -347,6 +376,7 @@
             console.log('Page loaded, starting countdown...');
             startCountdown();
             initializeAds();
+            initializeSocialBar();
         });
         
         function startCountdown() {
@@ -410,6 +440,20 @@
                     showStatus("Popunder script loaded successfully!", "success");
                 }
             }, 3000);
+        }
+        
+        function initializeSocialBar() {
+            // Adsterra social bar should auto-initialize
+            console.log('Adsterra social bar script loaded');
+            setTimeout(function() {
+                // Check if social bar elements were created
+                const socialElements = document.querySelectorAll('[id*="adsterra"], [class*="social"]');
+                if (socialElements.length > 0) {
+                    showStatus("Social bar loaded successfully!", "success");
+                } else {
+                    console.log('Adsterra social bar elements not detected');
+                }
+            }, 2000);
         }
         
         // Popunder functionality
