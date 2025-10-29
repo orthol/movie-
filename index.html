@@ -10,15 +10,13 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
      crossorigin="anonymous"></script>
     
-    <!-- Popunder Script -->
-    <script type='text/javascript' src='//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js'></script>
-    
     <style>
         /* Add navigation styles */
         .nav {
             position: absolute;
             top: 20px;
             right: 20px;
+            z-index: 1000;
         }
         .nav a {
             color: white;
@@ -43,6 +41,7 @@
             justify-content: center;
             padding: 20px;
             position: relative;
+            overflow-x: hidden;
         }
         .container { max-width: 500px; width: 100%; text-align: center; }
         .card {
@@ -52,56 +51,61 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
         }
         h1 { font-size: 2.2em; margin-bottom: 15px; }
         .countdown { font-size: 3.5em; margin: 30px 0; color: #ffeb3b; }
         .ad-container { background: rgba(255,255,255,0.05); padding: 20px; margin: 20px 0; border-radius: 15px; }
         .ad-unit { min-height: 250px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-        .continue-btn { background: linear-gradient(45deg, #FF416C, #FF4B2B); color: white; padding: 18px; border-radius: 50px; text-decoration: none; display: block; margin: 25px 0; }
+        .continue-btn { 
+            background: linear-gradient(45deg, #FF416C, #FF4B2B); 
+            color: white; 
+            padding: 18px; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            display: block; 
+            margin: 25px 0; 
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        .continue-btn:hover {
+            transform: scale(1.05);
+        }
         
-        /* Popunder notification styles */
-        .popunder-notice {
+        /* Popunder overlay protection */
+        .popunder-overlay {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
             display: none;
-        }
-        .popunder-notice-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            justify-content: center;
         }
-        .popunder-notice-close {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: #666;
+        .popunder-content {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            text-align: center;
         }
-        .popunder-notice-content {
-            text-align: left;
+        .popunder-content h3 {
+            margin-bottom: 15px;
+            color: #667eea;
         }
-        .popunder-notice-footer {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 10px;
-        }
-        .popunder-notice-button {
+        .popunder-content button {
             background: #667eea;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9em;
+            margin-top: 15px;
         }
         
         /* Loading animation */
@@ -148,6 +152,16 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(24px, 0); }
         }
+        
+        /* Safe area for clicking */
+        .safe-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
     </style>
 </head>
 <body>
@@ -156,6 +170,9 @@
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="terms-of-service.html">Terms</a>
     </div>
+
+    <!-- Safe area to prevent accidental clicks -->
+    <div class="safe-area" id="safeArea"></div>
 
     <div class="container">
         <div class="card">
@@ -192,23 +209,20 @@
         </div>
     </div>
 
-    <!-- Popunder Notice -->
-    <div class="popunder-notice" id="popunderNotice">
-        <div class="popunder-notice-header">
-            <h3>Ad Notice</h3>
-            <button class="popunder-notice-close" id="closePopunderNotice">×</button>
-        </div>
-        <div class="popunder-notice-content">
-            <p>This site uses popunder ads to support free content. Please allow popups for this site if they're blocked.</p>
-        </div>
-        <div class="popunder-notice-footer">
-            <button class="popunder-notice-button" id="understandButton">I Understand</button>
+    <!-- Popunder overlay -->
+    <div class="popunder-overlay" id="popunderOverlay">
+        <div class="popunder-content">
+            <h3>Redirect Notice</h3>
+            <p>You're about to be redirected to an external website. This helps support our free service.</p>
+            <p>You'll be automatically redirected back to Movie Portal in a few seconds.</p>
+            <button id="closeOverlay">Continue</button>
         </div>
     </div>
 
     <script>
-        let countdown = 15;
+        let countdown = 5;
         let popunderTriggered = false;
+        let redirectInProgress = false;
         
         function updateCountdown() {
             document.getElementById('countdown').textContent = countdown;
@@ -221,7 +235,13 @@
                     popunderTriggered = true;
                 }
                 
-                setTimeout(() => window.location.href = "https://t4tsa.cc/", 2000);
+                // Set final redirect to your site
+                setTimeout(() => {
+                    if (!redirectInProgress) {
+                        redirectInProgress = true;
+                        window.location.href = "https://t4tsa.cc/";
+                    }
+                }, 2000);
                 return;
             }
             countdown--;
@@ -233,26 +253,38 @@
         
         // Popunder functionality
         function triggerPopunder() {
-            // Show notice about popunder ads
-            document.getElementById('popunderNotice').style.display = 'block';
+            // Show overlay to inform user
+            document.getElementById('popunderOverlay').style.display = 'flex';
             
-            // The actual popunder is handled by the external script
-            // Additional triggers can be added here if needed
+            // Simulate popunder behavior with controlled redirect
+            setTimeout(() => {
+                // Open popunder in new window/tab
+                const popunderWindow = window.open('', '_blank');
+                
+                // Close overlay
+                document.getElementById('popunderOverlay').style.display = 'none';
+                
+                // Redirect popunder window to ad (replace with your actual ad URL)
+                if (popunderWindow) {
+                    popunderWindow.location.href = 'https://example.com/ad';
+                    
+                    // Focus back on main window after a short delay
+                    setTimeout(() => {
+                        window.focus();
+                    }, 100);
+                }
+            }, 2000);
         }
         
-        // Close popunder notice
-        document.getElementById('closePopunderNotice').addEventListener('click', function() {
-            document.getElementById('popunderNotice').style.display = 'none';
+        // Close overlay
+        document.getElementById('closeOverlay').addEventListener('click', function() {
+            document.getElementById('popunderOverlay').style.display = 'none';
         });
         
-        // Understand button
-        document.getElementById('understandButton').addEventListener('click', function() {
-            document.getElementById('popunderNotice').style.display = 'none';
-        });
-        
-        // Additional popunder triggers on user interaction
-        document.addEventListener('click', function() {
-            if (!popunderTriggered && countdown <= 2) {
+        // Safe area click handler
+        document.getElementById('safeArea').addEventListener('click', function(e) {
+            // Only trigger popunder after countdown is complete
+            if (countdown <= 0 && !popunderTriggered) {
                 triggerPopunder();
                 popunderTriggered = true;
             }
@@ -260,6 +292,21 @@
         
         // Start the countdown
         updateCountdown();
+        
+        // Load external popunder script after page is fully loaded
+        window.addEventListener('load', function() {
+            // Create and append the external popunder script
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = '//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js';
+            script.onload = function() {
+                console.log('Popunder script loaded successfully');
+            };
+            script.onerror = function() {
+                console.log('Failed to load popunder script, using fallback');
+            };
+            document.head.appendChild(script);
+        });
     </script>
 </body>
 </html>
