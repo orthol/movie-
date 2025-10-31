@@ -17,6 +17,7 @@
     <script type='text/javascript' src='//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js'></script>
     
     <style>
+        /* --- Your existing CSS --- */
         /* Navigation styles */
         .nav {
             position: absolute;
@@ -31,9 +32,7 @@
             font-size: 0.9em;
             opacity: 0.8;
         }
-        .nav a:hover {
-            opacity: 1;
-        }
+        .nav a:hover { opacity: 1; }
         
         /* Base styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,234 +60,40 @@
             z-index: 10;
         }
         h1 { font-size: 2.2em; margin-bottom: 15px; }
-        .countdown { 
-            font-size: 3.5em; 
-            margin: 30px 0; 
-            color: #ffeb3b; 
-            font-weight: bold;
-        }
-        .ad-container { 
-            background: rgba(255,255,255,0.05); 
-            padding: 20px; 
-            margin: 20px 0; 
-            border-radius: 15px; 
-        }
-        .ad-unit { 
-            min-height: 250px; 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column;
-            padding: 20px;
-        }
-        .ad-placeholder {
-            color: rgba(255,255,255,0.7);
-            font-size: 1.1em;
-        }
-        .continue-btn { 
-            background: linear-gradient(45deg, #FF416C, #FF4B2B); 
-            color: white; 
-            padding: 18px; 
-            border-radius: 50px; 
-            text-decoration: none; 
-            display: block; 
-            margin: 25px 0; 
-            font-weight: bold;
-            transition: transform 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1em;
-            width: 100%;
-        }
-        .continue-btn:hover {
-            transform: scale(1.05);
-        }
-        .continue-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Ad verification styles */
-        .ad-verification {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            display: none;
-        }
-        .verification-checkbox {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px 0;
-        }
-        .verification-checkbox input {
-            margin-right: 10px;
-            transform: scale(1.5);
-        }
-        .verification-checkbox label {
-            font-size: 1em;
-        }
-        
-        /* Progress bar */
-        .progress-container {
-            width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #FF416C, #FF4B2B);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        
-        /* Loading animation */
-        .loading-dots {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-        .loading-dots div {
-            position: absolute;
-            top: 33px;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: #ffeb3b;
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-        }
-        .loading-dots div:nth-child(1) {
-            left: 8px;
-            animation: loading-dots1 0.6s infinite;
-        }
-        .loading-dots div:nth-child(2) {
-            left: 8px;
-            animation: loading-dots2 0.6s infinite;
-        }
-        .loading-dots div:nth-child(3) {
-            left: 32px;
-            animation: loading-dots2 0.6s infinite;
-        }
-        .loading-dots div:nth-child(4) {
-            left: 56px;
-            animation: loading-dots3 0.6s infinite;
-        }
-        @keyframes loading-dots1 {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-        @keyframes loading-dots3 {
-            0% { transform: scale(1); }
-            100% { transform: scale(0); }
-        }
-        @keyframes loading-dots2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(24px, 0); }
-        }
-        
-        /* Ad interaction notice */
-        .ad-notice {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 0.9em;
-        }
-        
-        /* Popunder trigger button */
-        .popunder-trigger {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 10px 0;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        .popunder-trigger:hover {
-            transform: scale(1.05);
-            background: linear-gradient(45deg, #45a049, #4CAF50);
-        }
-        
-        /* Status message */
-        .status-message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        .status-success {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-        }
-        .status-error {
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid rgba(244, 67, 54, 0.5);
-        }
-        
-        /* Ad banner styles */
-        .ad-banner {
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .ad-banner:hover {
-            transform: scale(1.02);
-        }
-        
-        /* Social bar container */
-        .social-bar-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-        
-        /* Adsterra notification */
-        .adsterra-notice {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.8em;
-            opacity: 0.8;
-        }
-        
-        /* Smartlink ad styles */
-        .smartlink-ad {
-            background: linear-gradient(45deg, #9C27B0, #673AB7);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .smartlink-ad:hover {
-            transform: scale(1.02);
-            background: linear-gradient(45deg, #8E24AA, #5E35B1);
-        }
+        .countdown { font-size: 3.5em; margin: 30px 0; color: #ffeb3b; font-weight: bold; }
+        .ad-container { background: rgba(255,255,255,0.05); padding: 20px; margin: 20px 0; border-radius: 15px; }
+        .ad-unit { min-height: 250px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+        .ad-placeholder { color: rgba(255,255,255,0.7); font-size: 1.1em; }
+        .continue-btn { background: linear-gradient(45deg, #FF416C, #FF4B2B); color: white; padding: 18px; border-radius: 50px; text-decoration: none; display: block; margin: 25px 0; font-weight: bold; transition: transform 0.3s ease; border: none; cursor: pointer; font-size: 1.1em; width: 100%; }
+        .continue-btn:hover { transform: scale(1.05); }
+        .continue-btn:disabled { background: #666; cursor: not-allowed; transform: none; }
+        .ad-verification { background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; margin: 20px 0; display: none; }
+        .verification-checkbox { display: flex; align-items: center; justify-content: center; margin: 15px 0; }
+        .verification-checkbox input { margin-right: 10px; transform: scale(1.5); }
+        .verification-checkbox label { font-size: 1em; }
+        .progress-container { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.2); border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #FF416C, #FF4B2B); width: 0%; transition: width 0.5s ease; }
+        .loading-dots { display: inline-block; position: relative; width: 80px; height: 80px; }
+        .loading-dots div { position: absolute; top: 33px; width: 13px; height: 13px; border-radius: 50%; background: #ffeb3b; animation-timing-function: cubic-bezier(0, 1, 1, 0); }
+        .loading-dots div:nth-child(1) { left: 8px; animation: loading-dots1 0.6s infinite; }
+        .loading-dots div:nth-child(2) { left: 8px; animation: loading-dots2 0.6s infinite; }
+        .loading-dots div:nth-child(3) { left: 32px; animation: loading-dots2 0.6s infinite; }
+        .loading-dots div:nth-child(4) { left: 56px; animation: loading-dots3 0.6s infinite; }
+        @keyframes loading-dots1 { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes loading-dots3 { 0% { transform: scale(1); } 100% { transform: scale(0); } }
+        @keyframes loading-dots2 { 0% { transform: translate(0, 0); } 100% { transform: translate(24px, 0); } }
+        .ad-notice { background: rgba(255, 215, 0, 0.2); border: 1px solid rgba(255, 215, 0, 0.5); padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; }
+        .popunder-trigger { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; margin: 10px 0; font-size: 0.9em; transition: all 0.3s ease; width: 100%; }
+        .popunder-trigger:hover { transform: scale(1.05); background: linear-gradient(45deg, #45a049, #4CAF50); }
+        .status-message { padding: 10px; margin: 10px 0; border-radius: 5px; font-size: 0.9em; }
+        .status-success { background: rgba(76, 175, 80, 0.2); border: 1px solid rgba(76, 175, 80, 0.5); }
+        .status-error { background: rgba(244, 67, 54, 0.2); border: 1px solid rgba(244, 67, 54, 0.5); }
+        .ad-banner { width: 100%; height: 100px; background: linear-gradient(45deg, #ff6b6b, #ee5a24); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin: 10px 0; cursor: pointer; transition: transform 0.3s ease; }
+        .ad-banner:hover { transform: scale(1.02); }
+        .social-bar-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
+        .adsterra-notice { background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.8em; opacity: 0.8; }
+        .smartlink-ad { background: linear-gradient(45deg, #9C27B0, #673AB7); color: white; padding: 15px; border-radius: 10px; margin: 15px 0; cursor: pointer; transition: all 0.3s ease; }
+        .smartlink-ad:hover { transform: scale(1.02); background: linear-gradient(45deg, #8E24AA, #5E35B1); }
     </style>
 </head>
 <body>
@@ -303,7 +108,6 @@
         <div class="adsterra-notice">
             Follow us for more content!
         </div>
-        <!-- Adsterra Social Bar will load here -->
     </div>
 
     <div class="container">
@@ -319,10 +123,7 @@
             </div>
             
             <div class="loading-dots" style="margin: 20px auto;">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div></div><div></div><div></div><div></div>
             </div>
             
             <div class="ad-container">
@@ -362,7 +163,6 @@
                     </button>
                 </div>
                 
-                <!-- Status message -->
                 <div class="status-message" id="popunderStatus"></div>
             </div>
             
@@ -386,7 +186,6 @@
     </div>
 
     <script>
-        // Countdown variables
         let countdown = 15;
         let adVerified = false;
         let countdownComplete = false;
@@ -394,242 +193,99 @@
         let countdownInterval;
         const smartlinkUrl = "https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832";
         const finalDestination = "https://t4tsa.cc/";
-        
-        // Initialize everything when page loads
+        const popunderUrl = "https://pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5";
+
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, starting countdown...');
             startCountdown();
             initializeAds();
             initializeSocialBar();
             setupSmartlink();
         });
-        
+
         function startCountdown() {
             const countdownElement = document.getElementById('countdown');
             const progressBar = document.getElementById('progressBar');
             const statusText = document.getElementById('statusText');
-            
+
             countdownInterval = setInterval(function() {
                 countdown--;
                 countdownElement.textContent = countdown;
+                progressBar.style.width = ((15 - countdown)/15)*100 + '%';
                 
-                // Update progress bar
-                const progress = ((15 - countdown) / 15) * 100;
-                progressBar.style.width = `${progress}%`;
-                
-                if (countdown <= 0) {
+                if(countdown<=0){
                     clearInterval(countdownInterval);
                     countdownComplete = true;
                     countdownElement.textContent = "Ready!";
                     statusText.textContent = "Countdown complete! Please watch the ad to continue.";
-                    
-                    // Show ad verification section
                     document.getElementById('adVerification').style.display = 'block';
-                    
-                    // Show smartlink ad
                     document.getElementById('smartlinkAd').style.display = 'block';
-                    
-                    // Show fallback ad if AdSense doesn't load
                     setTimeout(function() {
                         const adSenseAd = document.querySelector('.adsbygoogle');
-                        if (!adSenseAd || !adSenseAd.innerHTML.trim()) {
+                        if(!adSenseAd || !adSenseAd.innerHTML.trim()){
                             document.getElementById('fallbackAd').style.display = 'flex';
                         }
-                    }, 2000);
-                    
-                    // Trigger popunder automatically when countdown completes
-                    if (!popunderShown) {
-                        triggerPopunder();
-                    }
-                    
-                    // Enable continue button if ad is already verified
-                    if (adVerified) {
-                        document.getElementById('continueBtn').disabled = false;
-                    }
+                    },2000);
+                    if(!popunderShown){ triggerPopunder(); }
+                    if(adVerified){ document.getElementById('continueBtn').disabled=false; }
                 }
-            }, 1000);
+            },1000);
         }
-        
+
         function initializeAds() {
-            // Initialize AdSense
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                console.log('AdSense initialized');
-            } catch (error) {
-                console.error('AdSense error:', error);
-                document.getElementById('fallbackAd').style.display = 'flex';
-            }
-            
-            // Check if popunder script loaded
-            setTimeout(function() {
-                if (typeof window.popunderTrigger === 'undefined') {
-                    showStatus("Popunder script not loaded. Using fallback ads.", "error");
-                } else {
-                    showStatus("Popunder script loaded successfully!", "success");
-                }
-            }, 3000);
+            try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){document.getElementById('fallbackAd').style.display='flex';}
         }
-        
-        function initializeSocialBar() {
-            // Adsterra social bar should auto-initialize
-            console.log('Adsterra social bar script loaded');
-            setTimeout(function() {
-                // Check if social bar elements were created
-                const socialElements = document.querySelectorAll('[id*="adsterra"], [class*="social"]');
-                if (socialElements.length > 0) {
-                    showStatus("Social bar loaded successfully!", "success");
-                } else {
-                    console.log('Adsterra social bar elements not detected');
-                }
-            }, 2000);
+        function initializeSocialBar(){console.log('Social bar loaded');}
+        function setupSmartlink(){
+            document.getElementById('smartlinkAd').addEventListener('click',function(){triggerSmartlinkAd();});
         }
-        
-        function setupSmartlink() {
-            // Setup smartlink ad click handler
-            document.getElementById('smartlinkAd').addEventListener('click', function() {
-                triggerSmartlinkAd();
-            });
-        }
-        
-        function triggerSmartlinkAd() {
-            showStatus("Loading advertisement...", "success");
-            
-            // Open smartlink in new tab
-            const adTab = window.open(smartlinkUrl, '_blank');
-            
-            if (adTab) {
-                showStatus("Ad loaded! Please wait 1-2 seconds...", "success");
-                
-                // Auto-check verification after ad loads
-                setTimeout(function() {
-                    document.getElementById('adWatched').checked = true;
-                    adVerified = true;
-                    if (countdownComplete) {
-                        document.getElementById('continueBtn').disabled = false;
-                    }
-                    showStatus("Ad completed! You can now continue to the content.", "success");
-                    
-                    // Focus back on main window
+
+        function triggerSmartlinkAd(){
+            const adTab = window.open(smartlinkUrl,'_blank');
+            if(adTab){
+                setTimeout(function(){
+                    document.getElementById('adWatched').checked=true;
+                    adVerified=true;
+                    if(countdownComplete) document.getElementById('continueBtn').disabled=false;
                     window.focus();
-                }, 2000); // 2 second delay for ad to load
-            } else {
-                showStatus("Ad blocked by browser. Please allow popups.", "error");
+                },2000);
             }
         }
-        
-        // Popunder functionality
-        function triggerPopunder() {
-            if (popunderShown) return;
-            
-            try {
-                showStatus("Triggering popunder ads...", "success");
-                
-                // Method 1: Try external script function
-                if (typeof window.popunderTrigger === 'function') {
-                    window.popunderTrigger();
-                    showStatus("Popunder triggered via script!", "success");
-                } 
-                // Method 2: Manual popunder
-                else {
-                    showStatus("Using manual popunder method...", "success");
-                    const popunderWindow = window.open('', '_blank', 'width=600,height=400,left=100,top=100');
-                    if (popunderWindow) {
-                        setTimeout(() => {
-                            popunderWindow.location.href = 'https://example.com';
-                            setTimeout(() => {
-                                window.focus();
-                                showStatus("Manual popunder opened!", "success");
-                            }, 100);
-                        }, 500);
-                    } else {
-                        showStatus("Popunder blocked by browser. Please allow popups.", "error");
-                    }
+
+        function triggerPopunder(){
+            if(popunderShown) return;
+            try{
+                const popunderWindow = window.open('','_blank','width=600,height=400,left=100,top=100');
+                if(popunderWindow){
+                    setTimeout(()=>{popunderWindow.location.href=popunderUrl; setTimeout(()=>{window.focus();},100);},500);
                 }
-                popunderShown = true;
-            } catch (error) {
-                console.error("Popunder error:", error);
-                showStatus("Error showing popunder. Please use manual button.", "error");
+                popunderShown=true;
+            }catch(e){}
+        }
+
+        function openAd(){
+            const adWindow=window.open(popunderUrl,'_blank');
+            if(adWindow){
+                setTimeout(function(){
+                    document.getElementById('adWatched').checked=true;
+                    adVerified=true;
+                    if(countdownComplete) document.getElementById('continueBtn').disabled=false;
+                },5000);
             }
         }
-        
-        // Fallback ad function
-        function openAd() {
-            const adWindow = window.open('https://example.com', '_blank');
-            if (adWindow) {
-                showStatus("Ad opened in new tab! Please watch it and return.", "success");
-                // Auto-check verification after delay
-                setTimeout(function() {
-                    document.getElementById('adWatched').checked = true;
-                    adVerified = true;
-                    if (countdownComplete) {
-                        document.getElementById('continueBtn').disabled = false;
-                    }
-                    showStatus("Thank you for watching the ad! You can now continue.", "success");
-                }, 5000);
-            }
-        }
-        
-        // Show status message
-        function showStatus(message, type) {
-            const statusEl = document.getElementById('popunderStatus');
-            statusEl.textContent = message;
-            statusEl.className = `status-message status-${type}`;
-            statusEl.style.display = 'block';
-            
-            console.log(`Status: ${message}`);
-        }
-        
-        // Manual popunder trigger
-        document.getElementById('manualPopunder').addEventListener('click', function() {
-            triggerPopunder();
+
+        document.getElementById('manualPopunder').addEventListener('click', triggerPopunder);
+        document.getElementById('adWatched').addEventListener('change',function(){
+            adVerified=this.checked;
+            if(countdownComplete && adVerified) document.getElementById('continueBtn').disabled=false;
         });
-        
-        // Ad verification checkbox handler
-        document.getElementById('adWatched').addEventListener('change', function() {
-            adVerified = this.checked;
-            
-            // Enable continue button if countdown is complete and ad is verified
-            if (countdownComplete && adVerified) {
-                document.getElementById('continueBtn').disabled = false;
-                showStatus("Ad verified! Click continue to access content.", "success");
-            }
-        });
-        
-        // Continue button handler - Now with smartlink integration
-        document.getElementById('continueBtn').addEventListener('click', function() {
-            if (countdownComplete && adVerified) {
-                // Show loading state
-                this.innerHTML = 'Loading final content...';
-                this.disabled = true;
-                
-                showStatus("Preparing your content...", "success");
-                
-                // Open smartlink ad first with 1-2 second delay
-                setTimeout(function() {
-                    const finalAdTab = window.open(smartlinkUrl, '_blank');
-                    
-                    if (finalAdTab) {
-                        showStatus("Final ad loading...", "success");
-                        
-                        // Wait 1-2 seconds for ad to load, then navigate to final destination
-                        setTimeout(function() {
-                            window.location.href = finalDestination;
-                        }, 1500); // 1.5 second delay
-                    } else {
-                        // If ad blocked, go directly to destination
-                        showStatus("Ad blocked, redirecting directly...", "error");
-                        window.location.href = finalDestination;
-                    }
-                }, 500);
-            } else {
-                showStatus("Please complete the ad verification first.", "error");
-            }
-        });
-        
-        // Additional triggers for the popunder script
-        document.addEventListener('click', function() {
-            if (countdownComplete && !popunderShown) {
-                setTimeout(triggerPopunder, 1000);
+        document.getElementById('continueBtn').addEventListener('click',function(){
+            if(countdownComplete && adVerified){
+                this.disabled=true; this.innerHTML='Loading final content...';
+                setTimeout(function(){
+                    const finalAdTab=window.open(smartlinkUrl,'_blank');
+                    if(finalAdTab){ setTimeout(()=>{window.location.href=finalDestination;},1500);}
+                    else{window.location.href=finalDestination;}
+                },500);
             }
         });
     </script>
