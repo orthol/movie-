@@ -94,6 +94,7 @@
             flex-direction: column;
             padding: 15px;
             position: relative;
+            overflow: hidden;
         }
 
         .ad-notice {
@@ -170,13 +171,6 @@
             display: none;
         }
 
-        .verification-checkbox {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
         .footer-links {
             margin-top: 20px;
             opacity: 0.7;
@@ -188,8 +182,8 @@
             text-decoration: none;
         }
 
-        /* Banner Ad Styling - INSIDE THE BOX */
-        #banner-ad-container {
+        /* Banner Ad Styling - PROPERLY INSIDE THE BOX */
+        #banner-ad-wrapper {
             width: 100%;
             height: 250px;
             display: flex;
@@ -198,6 +192,7 @@
             background: transparent;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
         .ad-loading {
@@ -206,6 +201,13 @@
             align-items: center;
             justify-content: center;
             color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
         }
 
         .ad-loading-spinner {
@@ -218,18 +220,17 @@
             margin-bottom: 10px;
         }
 
+        #adsterra-banner-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Social Bar Styling */
-        .social-bar-container {
-            position: fixed;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
         }
 
         @media (max-width: 768px) {
@@ -244,17 +245,10 @@
             .countdown {
                 font-size: 2.8em;
             }
-
-            .social-bar-container {
-                display: none; /* Hide social bar on mobile */
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Social Bar Container -->
-    <div class="social-bar-container" id="socialBarContainer"></div>
-
     <div class="container">
         <div class="card">
             <h1>🎬 Movie Portal</h1>
@@ -273,13 +267,14 @@
                         <strong>Advertisement will open automatically</strong>
                     </div>
                     
-                    <!-- Banner Ad Container INSIDE THE BOX -->
-                    <div id="banner-ad-container">
+                    <!-- Banner Ad Container PROPERLY INSIDE THE BOX -->
+                    <div id="banner-ad-wrapper">
                         <div class="ad-loading" id="adLoading">
                             <div class="ad-loading-spinner"></div>
-                            <p>Loading Banner Ad...</p>
+                            <p>Loading Banner Advertisement...</p>
                         </div>
-                        <!-- Adsterra Banner Ad WILL APPEAR HERE -->
+                        <!-- Adsterra Banner Ad Container -->
+                        <div id="adsterra-banner-container"></div>
                     </div>
                 </div>
 
@@ -312,23 +307,10 @@
         </div>
     </div>
 
-    <!-- Adsterra Banner Ad Script -->
-    <script type="text/javascript">
-        atOptions = {
-            'key' : '7bc0656dac291cc170726b05d6a6d2e7',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js"></script>
-
     <script>
         // Simple and reliable implementation
         let countdown = 15;
         let countdownComplete = false;
-        let adVerified = false;
         
         // Get DOM elements
         const countdownEl = document.getElementById('countdown');
@@ -339,8 +321,7 @@
         const adVerification = document.getElementById('adVerification');
         const popunderBtn = document.getElementById('manualPopunder');
         const adLoading = document.getElementById('adLoading');
-        const bannerAdContainer = document.getElementById('banner-ad-container');
-        const socialBarContainer = document.getElementById('socialBarContainer');
+        const bannerContainer = document.getElementById('adsterra-banner-container');
 
         // Start countdown immediately
         function startCountdown() {
@@ -366,65 +347,59 @@
             }, 1000);
         }
 
-        // Load Banner Ad properly
+        // Load Banner Ad properly INSIDE the container
         function loadBannerAd() {
-            // Create the banner ad container
-            const bannerDiv = document.createElement('div');
-            bannerDiv.id = 'container-7bc0656dac291cc170726b05d6a6d2e7';
-            bannerDiv.style.width = '100%';
-            bannerDiv.style.height = '250px';
-            bannerDiv.style.display = 'flex';
-            bannerDiv.style.alignItems = 'center';
-            bannerDiv.style.justifyContent = 'center';
+            // Create the proper container for Adsterra
+            const adContainer = document.createElement('div');
+            adContainer.id = 'container-7bc0656dac291cc170726b05d6a6d2e7';
+            adContainer.style.width = '100%';
+            adContainer.style.height = '100%';
+            adContainer.style.display = 'flex';
+            adContainer.style.alignItems = 'center';
+            adContainer.style.justifyContent = 'center';
             
-            bannerAdContainer.appendChild(bannerDiv);
+            bannerContainer.appendChild(adContainer);
             
-            // Check if banner loaded
-            setTimeout(() => {
-                const adContainer = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
-                if (adContainer && adContainer.innerHTML !== '' && adContainer.offsetHeight > 50) {
-                    console.log('Banner ad loaded successfully');
-                    adLoading.style.display = 'none';
-                    statusText.textContent = "Banner ad loaded! Countdown in progress...";
-                } else {
-                    console.log('Banner ad not loaded, showing fallback');
-                    showFallbackAd();
-                }
-            }, 3000);
+            // Load Adsterra script
+            const adsterraScript = document.createElement('script');
+            adsterraScript.type = 'text/javascript';
+            adsterraScript.src = '//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js';
+            
+            adsterraScript.onload = function() {
+                console.log('Adsterra banner script loaded');
+                // Hide loading after ad loads
+                setTimeout(() => {
+                    const loadedAd = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
+                    if (loadedAd && loadedAd.innerHTML !== '' && loadedAd.offsetHeight > 50) {
+                        adLoading.style.display = 'none';
+                        statusText.textContent = "Banner ad loaded! Countdown in progress...";
+                    } else {
+                        showFallbackAd();
+                    }
+                }, 2000);
+            };
+            
+            adsterraScript.onerror = function() {
+                console.log('Adsterra banner script failed');
+                showFallbackAd();
+            };
+            
+            document.head.appendChild(adsterraScript);
         }
 
-        // Load Social Bar properly
+        // Load Social Bar
         function loadSocialBar() {
             const socialScript = document.createElement('script');
             socialScript.type = 'text/javascript';
             socialScript.src = '//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js';
-            
-            socialScript.onload = function() {
-                console.log('Social bar script loaded');
-                // The social bar should automatically appear
-            };
-            
-            socialScript.onerror = function() {
-                console.log('Social bar script failed to load');
-            };
-            
             document.head.appendChild(socialScript);
         }
 
-        // Load Popunder properly
+        // Load Popunder
         function loadPopunder() {
             const popunderScript = document.createElement('script');
             popunderScript.type = 'text/javascript';
             popunderScript.src = '//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js';
-            
-            popunderScript.onload = function() {
-                console.log('Popunder script loaded');
-            };
-            
-            popunderScript.onerror = function() {
-                console.log('Popunder script failed to load');
-            };
-            
             document.head.appendChild(popunderScript);
         }
 
@@ -465,22 +440,19 @@
             adLoading.innerHTML = `
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 3em; margin-bottom: 15px;">🎥</div>
-                    <h3>Advertisement</h3>
-                    <p>Banner ads will load here</p>
+                    <h3>Banner Advertisement</h3>
+                    <p>300x250px Banner Ad Space</p>
                     <p style="font-size: 0.8em; opacity: 0.7;">Ads open automatically after countdown</p>
                 </div>
             `;
+            statusText.textContent = "Banner ad space ready! Countdown in progress...";
         }
 
         // Smartlink ad click
         smartlinkAd.addEventListener('click', function() {
-            console.log('Smartlink ad clicked');
             const newTab = window.open('https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832', '_blank');
-            
             if (newTab) {
                 statusText.textContent = "Special offer opened! Check the new tab.";
-            } else {
-                alert("Popup blocked! Please allow popups to access special offers.");
             }
         });
 
@@ -493,8 +465,6 @@
                         window.focus();
                         statusText.textContent = "Popunder opened successfully!";
                     }, 500);
-                } else {
-                    alert("Popunder blocked! Please allow popups.");
                 }
             } catch (error) {
                 console.log('Popunder error:', error);
@@ -503,16 +473,20 @@
 
         // Continue button
         continueBtn.addEventListener('click', function() {
-            console.log('Continue button clicked');
-            
-            // Open final smartlink before redirect
             const finalWindow = window.open('https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832', '_blank');
-            
-            // Redirect to main content
             setTimeout(() => {
                 window.location.href = 'https://t4tsa.cc/';
             }, 1000);
         });
+
+        // Initialize Adsterra configuration
+        window.atOptions = {
+            'key' : '7bc0656dac291cc170726b05d6a6d2e7',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
 
         // Initialize everything when page loads
         window.addEventListener('load', function() {
@@ -521,26 +495,11 @@
             loadBannerAd();
             loadSocialBar();
             loadPopunder();
-            
-            // Auto-trigger popunder after 16 seconds
-            setTimeout(() => {
-                if (countdownComplete) {
-                    try {
-                        const autoPopunder = window.open('https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832', '_blank');
-                        if (autoPopunder) {
-                            setTimeout(() => window.focus(), 500);
-                        }
-                    } catch (error) {
-                        console.log('Auto popunder failed');
-                    }
-                }
-            }, 16000);
         });
 
         // Fallback: if countdown doesn't complete
         setTimeout(() => {
             if (!countdownComplete) {
-                console.log('Fallback: manual completion');
                 countdownComplete = true;
                 countdownEl.textContent = "Ready!";
                 statusText.textContent = "Opening advertisements...";
