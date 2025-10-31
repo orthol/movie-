@@ -664,7 +664,7 @@ h1 {
     transform: scale(1.05);
 }
 
-/* Multiple ad networks styling */
+/* Ad network styling */
 .ad-network {
     width: 100%;
     height: 100%;
@@ -713,6 +713,19 @@ h1 {
     background: #ff5722;
     border-color: #ff5722;
 }
+
+/* Adsterra specific styling */
+#adsterra-ad-container {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#adsterra-ad-container iframe {
+    border-radius: 8px;
+}
 </style>
 </head>
 <body>
@@ -745,15 +758,13 @@ h1 {
 </div>
 
 <!-- Ad Network Selector -->
-<div class="ad-network-selector" id="adNetworkSelector" style="display: none;">
+<div class="ad-network-selector" id="adNetworkSelector">
     <button class="network-btn" data-network="adsense">AdSense</button>
     <button class="network-btn" data-network="adsterra">Adsterra</button>
-    <button class="network-btn" data-network="propeller">PropellerAds</button>
-    <button class="network-btn" data-network="monetag">Monetag</button>
 </div>
 
 <!-- AdSense Ad -->
-<div class="ad-network" id="adsenseAd">
+<div class="ad-network active" id="adsenseAd">
     <ins class="adsbygoogle"
     style="display:block; width: 100%; height: 250px;"
     data-ad-client="ca-pub-4494471028788825"
@@ -764,17 +775,9 @@ h1 {
 
 <!-- Adsterra Ad -->
 <div class="ad-network" id="adsterraAd">
-    <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
-</div>
-
-<!-- PropellerAds Ad -->
-<div class="ad-network" id="propellerAd">
-    <div id="propeller-ad-container"></div>
-</div>
-
-<!-- Monetag Ad -->
-<div class="ad-network" id="monetagAd">
-    <div id="monetag-ad-container"></div>
+    <div id="adsterra-ad-container">
+        <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
+    </div>
 </div>
 
 <!-- Fallback Ad Banner -->
@@ -859,13 +862,10 @@ const networkButtons = document.querySelectorAll('.network-btn');
 // Ad network elements
 const adsenseAd = document.getElementById("adsenseAd");
 const adsterraAd = document.getElementById("adsterraAd");
-const propellerAd = document.getElementById("propellerAd");
-const monetagAd = document.getElementById("monetagAd");
 const fallbackAd = document.getElementById("fallbackAd");
 
 // Check if user is in Europe (GDPR compliance)
 function isUserInEurope() {
-    // This is a simplified check - in production, use a proper geolocation service
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const europeanTimezones = [
         'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Rome', 'Europe/Madrid',
@@ -884,12 +884,19 @@ function initializeAdNetworks() {
     (adsbygoogle = window.adsbygoogle || []).push({});
     
     // Initialize Adsterra
-    if (typeof window.atOptions !== 'undefined') {
-        window.atOptions = {
-            'key' : '8d5c69d04dbd1bc1a95e35946b934ff5',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
+    window.atOptions = {
+        'key' : '8d5c69d04dbd1bc1a95e35946b934ff5',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+    };
     
+    const adsterraScript = document.createElement('script');
+    adsterraScript.type = 'text/javascript';
+    adsterraScript.src = `//www.highperformanceformat.com/8d5c69d04dbd1bc1a95e35946b934ff5/invoke.js`;
+    adsterraScript.onload = function() {
+        console.log('Adsterra script loaded successfully');
+    };
+    adsterraScript.onerror = function() {
+        console.log('Adsterra script fail
