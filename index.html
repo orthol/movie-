@@ -408,6 +408,63 @@ h1 {
     box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
+/* Cookie Consent Banner */
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px;
+    z-index: 10000;
+    display: none;
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cookie-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    text-align: center;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.cookie-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.cookie-accept {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+}
+
+.cookie-reject {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cookie-btn:hover {
+    transform: translateY(-2px);
+}
+
 /* Desktop styles */
 @media (min-width: 768px) {
     body {
@@ -511,6 +568,30 @@ h1 {
     .footer-links {
         font-size: 0.85em;
     }
+    
+    .cookie-content {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+    
+    .cookie-buttons {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Hide navigation on mobile */
+@media (max-width: 767px) {
+    .nav {
+        display: none;
+    }
+    
+    /* Move links to footer on mobile */
+    .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
 }
 
 /* Large screen adjustments */
@@ -540,11 +621,6 @@ h1 {
     
     .continue-btn, .popunder-trigger {
         font-size: 0.9em;
-    }
-    
-    .nav {
-        flex-direction: column;
-        gap: 5px;
     }
 }
 
@@ -670,6 +746,20 @@ Click below to trigger popunder ads:
 </div>
 </div>
 
+<!-- Cookie Consent Banner -->
+<div class="cookie-consent" id="cookieConsent">
+    <div class="cookie-content">
+        <div class="cookie-text">
+            <p>We use cookies and similar technologies to provide the best experience on our website. 
+            This includes personalized content and advertising. By clicking "Accept", you consent to the use of these technologies.</p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn cookie-accept" id="cookieAccept">Accept</button>
+            <button class="cookie-btn cookie-reject" id="cookieReject">Reject</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // Countdown variables
 let countdown = 15;
@@ -683,9 +773,61 @@ const popunderBtn = document.getElementById("manualPopunder");
 const adCheckbox = document.getElementById("adWatched");
 const adVerification = document.getElementById("adVerification");
 const statusText = document.getElementById("statusText");
+const cookieConsent = document.getElementById("cookieConsent");
+const cookieAccept = document.getElementById("cookieAccept");
+const cookieReject = document.getElementById("cookieReject");
+
+// Check if user is in Europe (GDPR compliance)
+function isUserInEurope() {
+    // This is a simplified check - in production, use a proper geolocation service
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const europeanTimezones = [
+        'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Rome', 'Europe/Madrid',
+        'Europe/Amsterdam', 'Europe/Brussels', 'Europe/Vienna', 'Europe/Prague', 'Europe/Warsaw',
+        'Europe/Budapest', 'Europe/Stockholm', 'Europe/Oslo', 'Europe/Copenhagen', 'Europe/Helsinki',
+        'Europe/Athens', 'Europe/Lisbon', 'Europe/Dublin', 'Europe/Bucharest', 'Europe/Sofia',
+        'Europe/Zagreb', 'Europe/Belgrade', 'Europe/Kiev', 'Europe/Minsk', 'Europe/Moscow'
+    ];
+    
+    return europeanTimezones.includes(timezone);
+}
 
 // Initialize AdSense
 (adsbygoogle = window.adsbygoogle || []).push({});
+
+// Show cookie consent for European users
+if (isUserInEurope()) {
+    setTimeout(() => {
+        cookieConsent.style.display = 'block';
+    }, 1000);
+} else {
+    // Load social bar for non-European users
+    loadSocialBar();
+}
+
+// Cookie consent handlers
+cookieAccept.addEventListener('click', function() {
+    cookieConsent.style.display = 'none';
+    localStorage.setItem('cookiesAccepted', 'true');
+    loadSocialBar();
+});
+
+cookieReject.addEventListener('click', function() {
+    cookieConsent.style.display = 'none';
+    localStorage.setItem('cookiesAccepted', 'false');
+});
+
+// Load social bar only if cookies are accepted and user is not in Europe
+function loadSocialBar() {
+    const cookiesAccepted = localStorage.getItem('cookiesAccepted');
+    if (cookiesAccepted !== 'false' && !isUserInEurope()) {
+        // Load your social bar script
+        const script = document.createElement('script');
+        script.src = '//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js';
+        script.type = 'text/javascript';
+        document.head.appendChild(script);
+    }
+}
 
 // Countdown
 const timer = setInterval(() => {
@@ -729,121 +871,4 @@ smartlinkAd.addEventListener("click", function(){
             triggerPopunder();
         }, 2000); // 2 sec simulated watch
     } else {
-        alert("Popup blocked! Please allow popups to continue.");
-    }
-});
-
-// Popunder manual trigger
-popunderBtn.addEventListener("click", function(){
-    triggerPopunder();
-});
-
-// Function to trigger popunder
-function triggerPopunder() {
-    try {
-        // Your actual popunder script URL
-        const popunderScript = "//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js";
-        
-        // Create a script element to load the popunder
-        const script = document.createElement('script');
-        script.src = popunderScript;
-        script.type = 'text/javascript';
-        document.head.appendChild(script);
-        
-        // Alternative method: open a new window as fallback
-        setTimeout(() => {
-            const popunderWindow = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
-            if(popunderWindow){
-                setTimeout(() => { 
-                    window.focus(); 
-                    statusText.textContent = "Popunder triggered successfully!";
-                }, 500);
-            } else {
-                alert("Popunder blocked! Please allow popups for full experience.");
-            }
-        }, 1000);
-    } catch(err){
-        console.error("Popunder error:", err);
-        // Fallback if script fails
-        const popunderWindow = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
-        if(popunderWindow){
-            setTimeout(() => { window.focus(); }, 500);
-        }
-    }
-}
-
-// Checkbox verification
-adCheckbox.addEventListener("change", function() {
-    adVerified = this.checked;
-    if(countdownComplete && adVerified){
-        continueBtn.disabled = false;
-    } else {
-        continueBtn.disabled = true;
-    }
-});
-
-// Continue button action
-continueBtn.addEventListener("click", function(){
-    // Trigger popunder before redirecting
-    triggerPopunder();
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-        window.location.href = "https://t4tsa.cc/";
-    }, 1000);
-});
-
-// Fallback ad banner
-const fallbackAd = document.getElementById("fallbackAd");
-const fallbackAdBtn = fallbackAd.querySelector('.ad-btn');
-
-setTimeout(() => {
-    // Check if AdSense ad is visible
-    const ads = document.querySelectorAll('.adsbygoogle');
-    let adVisible = false;
-    
-    ads.forEach(ad => {
-        if (ad.offsetHeight > 0) {
-            adVisible = true;
-        }
-    });
-    
-    // Show fallback if no ads are visible
-    if (!adVisible) {
-        fallbackAd.style.display = "block";
-        
-        // Add click handler for fallback ad
-        fallbackAdBtn.addEventListener("click", function() {
-            // Simulate ad watching
-            statusText.textContent = "Playing advertisement...";
-            
-            setTimeout(() => {
-                adCheckbox.checked = true;
-                adVerified = true;
-                if(countdownComplete){
-                    continueBtn.disabled = false;
-                }
-                statusText.textContent = "Ad completed! You can now continue.";
-                
-                // Trigger popunder after ad completion
-                triggerPopunder();
-            }, 2000);
-        });
-    }
-}, 3000); // Check after 3 seconds
-
-// Auto-trigger popunder after countdown completes
-setTimeout(() => {
-    if (countdownComplete) {
-        triggerPopunder();
-    }
-}, 16000); // 1 second after countdown finishes
-</script>
-
-<!-- Your actual popunder script -->
-<script type="text/javascript" src="//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js"></script>
-
-<!-- Your actual social bar script -->
-<script type="text/javascript" src="//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js"></script>
-</body>
-    </html>
+        alert
