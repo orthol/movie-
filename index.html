@@ -732,7 +732,7 @@ h1 {
         <div class="ad-loading-spinner"></div>
         <p>Loading advertisement...</p>
     </div>
-    <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
+    <div id="container-adsterra"></div>
 </div>
 
 <!-- Fallback Ad Banner -->
@@ -799,6 +799,9 @@ Click below to trigger popunder ads:
 let countdown = 15;
 let countdownComplete = false;
 let adVerified = false;
+let timer;
+
+// DOM Elements
 const countdownEl = document.getElementById("countdown");
 const progressBar = document.getElementById("progressBar");
 const continueBtn = document.getElementById("continueBtn");
@@ -812,6 +815,43 @@ const cookieAccept = document.getElementById("cookieAccept");
 const cookieReject = document.getElementById("cookieReject");
 const fallbackAd = document.getElementById("fallbackAd");
 const fallbackAdBtn = fallbackAd.querySelector('.ad-btn');
+
+// Initialize Countdown
+function startCountdown() {
+    countdown = 15;
+    countdownComplete = false;
+    countdownEl.textContent = countdown;
+    progressBar.style.width = "0%";
+    statusText.textContent = "Please wait while we prepare your content...";
+    
+    // Clear any existing timer
+    if (timer) {
+        clearInterval(timer);
+    }
+    
+    // Start new countdown
+    timer = setInterval(() => {
+        countdown--;
+        countdownEl.textContent = countdown;
+        progressBar.style.width = ((15 - countdown)/15*100) + "%";
+        
+        if(countdown <= 0){
+            clearInterval(timer);
+            countdownEl.textContent = "Ready!";
+            countdownComplete = true;
+            statusText.textContent = "Countdown complete! Please watch the ad to continue.";
+            adVerification.style.display = "block";
+
+            // Show smartlink ad
+            smartlinkAd.style.display = "block";
+
+            // Enable continue button if ad already verified
+            if(adVerified){
+                continueBtn.disabled = false;
+            }
+        }
+    }, 1000);
+}
 
 // Check if user is in Europe (GDPR compliance)
 function isUserInEurope() {
@@ -831,6 +871,12 @@ function isUserInEurope() {
 function initializeAdsterra() {
     statusText.textContent = "Loading advertisement...";
     
+    // Clear any existing ad container
+    const container = document.getElementById('container-adsterra');
+    if (container) {
+        container.innerHTML = '';
+    }
+    
     // Adsterra configuration
     window.atOptions = {
         'key' : '8d5c69d04dbd1bc1a95e35946b934ff5',
@@ -848,45 +894,4 @@ function initializeAdsterra() {
         console.log('Adsterra ad loaded successfully');
         statusText.textContent = "Advertisement loaded! Please watch to continue.";
         
-        // Hide loading spinner after ad loads
-        setTimeout(() => {
-            const loadingElement = document.querySelector('.ad-loading');
-            if (loadingElement) {
-                loadingElement.style.display = 'none';
-            }
-        }, 1000);
-    };
-    
-    adsterraScript.onerror = function() {
-        console.log('Adsterra ad failed to load, showing fallback');
-        statusText.textContent = "Advertisement ready! Click to watch.";
-        showFallbackAd();
-    };
-    
-    document.head.appendChild(adsterraScript);
-    
-    // Check if ad loaded properly after 3 seconds
-    setTimeout(() => {
-        const adContainer = document.getElementById('container-8d5c69d04dbd1bc1a95e35946b934ff5');
-        if (!adContainer || adContainer.offsetHeight < 50) {
-            console.log('Adsterra ad not visible, showing fallback');
-            showFallbackAd();
-        }
-    }, 3000);
-}
-
-// Show fallback ad
-function showFallbackAd() {
-    fallbackAd.style.display = 'block';
-    const loadingElement = document.querySelector('.ad-loading');
-    if (loadingElement) {
-        loadingElement.style.display = 'none';
-    }
-}
-
-// Show cookie consent for European users
-if (isUserInEurope()) {
-    setTimeout(() => {
-        cookieConsent.style.display = 'block';
-    }, 1000);
-} 
+        // Hide load
