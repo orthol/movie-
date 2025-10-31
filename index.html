@@ -11,7 +11,7 @@
 crossorigin="anonymous"></script>
 
 <style>
-/* Base styles */
+/* Base styles - Mobile First */
 * {
     margin: 0;
     padding: 0;
@@ -26,7 +26,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
     position: relative;
     overflow-x: hidden;
 }
@@ -44,8 +44,8 @@ body::before {
 }
 
 .container {
-    max-width: 500px;
     width: 100%;
+    max-width: 500px;
     text-align: center;
     z-index: 10;
 }
@@ -53,9 +53,9 @@ body::before {
 .card {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(15px);
-    padding: 40px 30px;
+    padding: 25px 20px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.15);
     position: relative;
     z-index: 10;
@@ -74,8 +74,8 @@ body::before {
 }
 
 h1 {
-    font-size: 2.2em;
-    margin-bottom: 15px;
+    font-size: 1.8em;
+    margin-bottom: 12px;
     background: linear-gradient(45deg, #ff8a00, #e52e71);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -83,14 +83,15 @@ h1 {
 }
 
 .subtitle {
-    font-size: 1.1em;
-    margin-bottom: 25px;
+    font-size: 1em;
+    margin-bottom: 20px;
     opacity: 0.9;
+    line-height: 1.4;
 }
 
 .countdown {
-    font-size: 3.5em;
-    margin: 30px 0;
+    font-size: 2.8em;
+    margin: 25px 0;
     color: #ffeb3b;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
@@ -98,21 +99,21 @@ h1 {
 
 .ad-container {
     background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    margin: 20px 0;
+    padding: 15px;
+    margin: 15px 0;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ad-unit {
-    min-height: 250px;
+    min-height: 200px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 20px;
+    padding: 15px;
     position: relative;
     overflow: hidden;
 }
@@ -133,28 +134,33 @@ h1 {
 }
 
 .ad-notice {
-    margin-bottom: 15px;
-    font-size: 0.9em;
+    margin-bottom: 12px;
+    font-size: 0.85em;
     opacity: 0.9;
+    text-align: center;
 }
 
 .continue-btn {
     background: linear-gradient(45deg, #FF416C, #FF4B2B);
     color: white;
-    padding: 18px;
+    padding: 16px;
     border-radius: 50px;
     text-decoration: none;
     display: block;
-    margin: 25px 0;
+    margin: 20px 0;
     font-weight: bold;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1em;
     width: 100%;
     position: relative;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(255, 65, 108, 0.3);
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .continue-btn:disabled {
@@ -189,7 +195,7 @@ h1 {
 
 .progress-container {
     width: 100%;
-    height: 10px;
+    height: 8px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     margin: 20px 0;
@@ -207,16 +213,16 @@ h1 {
 .loading-dots {
     display: inline-block;
     position: relative;
-    width: 80px;
-    height: 80px;
-    margin: 20px auto;
+    width: 70px;
+    height: 70px;
+    margin: 15px auto;
 }
 
 .loading-dots div {
     position: absolute;
-    top: 33px;
-    width: 13px;
-    height: 13px;
+    top: 27px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
     background: #ffeb3b;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
@@ -224,22 +230,22 @@ h1 {
 }
 
 .loading-dots div:nth-child(1) {
-    left: 8px;
+    left: 6px;
     animation: loading-dots1 0.6s infinite;
 }
 
 .loading-dots div:nth-child(2) {
-    left: 8px;
+    left: 6px;
     animation: loading-dots2 0.6s infinite;
 }
 
 .loading-dots div:nth-child(3) {
-    left: 32px;
+    left: 26px;
     animation: loading-dots2 0.6s infinite;
 }
 
 .loading-dots div:nth-child(4) {
-    left: 56px;
+    left: 45px;
     animation: loading-dots3 0.6s infinite;
 }
 
@@ -250,7 +256,7 @@ h1 {
 
 @keyframes loading-dots2 {
     0% { transform: translate(0, 0); }
-    100% { transform: translate(24px, 0); }
+    100% { transform: translate(19px, 0); }
 }
 
 @keyframes loading-dots3 {
@@ -260,18 +266,20 @@ h1 {
 
 .nav {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     z-index: 1000;
+    display: flex;
+    gap: 10px;
 }
 
 .nav a {
     color: white;
     text-decoration: none;
-    margin-left: 15px;
-    font-size: 0.9em;
+    font-size: 0.85em;
     opacity: 0.8;
     transition: opacity 0.3s;
+    padding: 5px;
 }
 
 .nav a:hover {
@@ -282,7 +290,7 @@ h1 {
     background: linear-gradient(45deg, #4CAF50, #45a049);
     color: white;
     border: none;
-    padding: 12px 20px;
+    padding: 14px 20px;
     border-radius: 25px;
     cursor: pointer;
     margin: 10px 0;
@@ -290,6 +298,10 @@ h1 {
     transition: all 0.3s ease;
     width: 100%;
     box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .popunder-trigger:hover {
@@ -334,7 +346,7 @@ h1 {
 }
 
 .ad-verification {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 15px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
@@ -346,26 +358,32 @@ h1 {
     align-items: center;
     justify-content: center;
     margin-top: 10px;
+    flex-wrap: wrap;
 }
 
 .verification-checkbox input {
-    margin-right: 10px;
+    margin-right: 8px;
+    transform: scale(1.2);
 }
 
 .verification-checkbox label {
     font-size: 0.9em;
+    text-align: center;
 }
 
 .footer-links {
     margin-top: 20px;
     opacity: 0.7;
-    font-size: 0.85em;
+    font-size: 0.8em;
+    line-height: 1.4;
 }
 
 .footer-links a {
     color: #ffeb3b;
     text-decoration: none;
     transition: color 0.3s;
+    display: inline-block;
+    margin: 0 5px;
 }
 
 .footer-links a:hover {
@@ -382,6 +400,7 @@ h1 {
     cursor: pointer;
     margin: 10px 0;
     transition: all 0.3s ease;
+    text-align: center;
 }
 
 .ad-banner:hover {
@@ -389,31 +408,184 @@ h1 {
     box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 600px) {
+/* Desktop styles */
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+    }
+    
     .card {
-        padding: 30px 20px;
+        padding: 40px 30px;
     }
     
     h1 {
-        font-size: 1.8em;
+        font-size: 2.2em;
+        margin-bottom: 15px;
+    }
+    
+    .subtitle {
+        font-size: 1.1em;
+        margin-bottom: 25px;
     }
     
     .countdown {
-        font-size: 2.8em;
+        font-size: 3.5em;
+        margin: 30px 0;
+    }
+    
+    .ad-container {
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .ad-unit {
+        min-height: 250px;
+        padding: 20px;
+    }
+    
+    .ad-notice {
+        margin-bottom: 15px;
+        font-size: 0.9em;
+    }
+    
+    .continue-btn {
+        padding: 18px;
+        margin: 25px 0;
+        font-size: 1.1em;
+        min-height: auto;
+    }
+    
+    .progress-container {
+        height: 10px;
+        margin: 20px 0;
+    }
+    
+    .loading-dots {
+        width: 80px;
+        height: 80px;
+        margin: 20px auto;
+    }
+    
+    .loading-dots div {
+        top: 33px;
+        width: 13px;
+        height: 13px;
+    }
+    
+    .loading-dots div:nth-child(1) {
+        left: 8px;
+    }
+    
+    .loading-dots div:nth-child(2) {
+        left: 8px;
+    }
+    
+    .loading-dots div:nth-child(3) {
+        left: 32px;
+    }
+    
+    .loading-dots div:nth-child(4) {
+        left: 56px;
+    }
+    
+    @keyframes loading-dots2 {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(24px, 0); }
     }
     
     .nav {
-        position: relative;
-        top: 0;
-        right: 0;
-        text-align: center;
-        margin-bottom: 20px;
+        top: 20px;
+        right: 20px;
+        gap: 15px;
     }
     
     .nav a {
-        margin: 0 8px;
+        font-size: 0.9em;
     }
+    
+    .popunder-trigger {
+        padding: 12px 20px;
+        min-height: auto;
+    }
+    
+    .footer-links {
+        font-size: 0.85em;
+    }
+}
+
+/* Large screen adjustments */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 550px;
+    }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 360px) {
+    .card {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .countdown {
+        font-size: 2.5em;
+    }
+    
+    .ad-unit {
+        min-height: 180px;
+    }
+    
+    .continue-btn, .popunder-trigger {
+        font-size: 0.9em;
+    }
+    
+    .nav {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+/* Ad styling */
+.ad-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.ad-placeholder h3 {
+    margin-bottom: 10px;
+    color: #ffeb3b;
+}
+
+.ad-placeholder p {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.ad-placeholder .ad-btn {
+    background: #ff5722;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.ad-placeholder .ad-btn:hover {
+    background: #ff7043;
+    transform: scale(1.05);
 }
 </style>
 </head>
@@ -456,7 +628,11 @@ data-full-width-responsive="true"></ins>
 
 <!-- Fallback Ad Banner -->
 <div class="ad-banner" id="fallbackAd">
-<div>🎥 SPECIAL OFFER: Click to watch ad and continue!</div>
+<div class="ad-placeholder">
+<h3>🎥 SPECIAL OFFER!</h3>
+<p>Watch this ad to unlock premium content</p>
+<button class="ad-btn">Watch Now</button>
+</div>
 </div>
 </div>
 
@@ -536,6 +712,7 @@ const timer = setInterval(() => {
 
 // Smartlink ad click
 smartlinkAd.addEventListener("click", function(){
+    // Use your actual popunder script URL here
     const adTab = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
     if(adTab){
         statusText.textContent = "Ad opened in new tab. Please watch it completely...";
@@ -547,6 +724,9 @@ smartlinkAd.addEventListener("click", function(){
             }
             statusText.textContent = "Ad completed! You can now continue.";
             window.focus();
+            
+            // Trigger popunder after ad completion
+            triggerPopunder();
         }, 2000); // 2 sec simulated watch
     } else {
         alert("Popup blocked! Please allow popups to continue.");
@@ -555,18 +735,42 @@ smartlinkAd.addEventListener("click", function(){
 
 // Popunder manual trigger
 popunderBtn.addEventListener("click", function(){
-    try{
-        const popunderWindow = window.open("", "_blank", "width=600,height=400,left=100,top=100");
-        if(popunderWindow){
-            popunderWindow.location.href = "https://example.com";
-            setTimeout(() => { window.focus(); }, 500);
-        } else {
-            alert("Popunder blocked! Please allow popups.");
-        }
+    triggerPopunder();
+});
+
+// Function to trigger popunder
+function triggerPopunder() {
+    try {
+        // Your actual popunder script URL
+        const popunderScript = "//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js";
+        
+        // Create a script element to load the popunder
+        const script = document.createElement('script');
+        script.src = popunderScript;
+        script.type = 'text/javascript';
+        document.head.appendChild(script);
+        
+        // Alternative method: open a new window as fallback
+        setTimeout(() => {
+            const popunderWindow = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
+            if(popunderWindow){
+                setTimeout(() => { 
+                    window.focus(); 
+                    statusText.textContent = "Popunder triggered successfully!";
+                }, 500);
+            } else {
+                alert("Popunder blocked! Please allow popups for full experience.");
+            }
+        }, 1000);
     } catch(err){
         console.error("Popunder error:", err);
+        // Fallback if script fails
+        const popunderWindow = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
+        if(popunderWindow){
+            setTimeout(() => { window.focus(); }, 500);
+        }
     }
-});
+}
 
 // Checkbox verification
 adCheckbox.addEventListener("change", function() {
@@ -580,11 +784,19 @@ adCheckbox.addEventListener("change", function() {
 
 // Continue button action
 continueBtn.addEventListener("click", function(){
-    window.location.href = "https://t4tsa.cc/";
+    // Trigger popunder before redirecting
+    triggerPopunder();
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+        window.location.href = "https://t4tsa.cc/";
+    }, 1000);
 });
 
 // Fallback ad banner
 const fallbackAd = document.getElementById("fallbackAd");
+const fallbackAdBtn = fallbackAd.querySelector('.ad-btn');
+
 setTimeout(() => {
     // Check if AdSense ad is visible
     const ads = document.querySelectorAll('.adsbygoogle');
@@ -601,16 +813,37 @@ setTimeout(() => {
         fallbackAd.style.display = "block";
         
         // Add click handler for fallback ad
-        fallbackAd.addEventListener("click", function() {
-            adCheckbox.checked = true;
-            adVerified = true;
-            if(countdownComplete){
-                continueBtn.disabled = false;
-            }
-            statusText.textContent = "Ad completed! You can now continue.";
+        fallbackAdBtn.addEventListener("click", function() {
+            // Simulate ad watching
+            statusText.textContent = "Playing advertisement...";
+            
+            setTimeout(() => {
+                adCheckbox.checked = true;
+                adVerified = true;
+                if(countdownComplete){
+                    continueBtn.disabled = false;
+                }
+                statusText.textContent = "Ad completed! You can now continue.";
+                
+                // Trigger popunder after ad completion
+                triggerPopunder();
+            }, 2000);
         });
     }
 }, 3000); // Check after 3 seconds
+
+// Auto-trigger popunder after countdown completes
+setTimeout(() => {
+    if (countdownComplete) {
+        triggerPopunder();
+    }
+}, 16000); // 1 second after countdown finishes
 </script>
+
+<!-- Your actual popunder script -->
+<script type="text/javascript" src="//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js"></script>
+
+<!-- Your actual social bar script -->
+<script type="text/javascript" src="//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js"></script>
 </body>
     </html>
