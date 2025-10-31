@@ -663,6 +663,56 @@ h1 {
     background: #ff7043;
     transform: scale(1.05);
 }
+
+/* Multiple ad networks styling */
+.ad-network {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.ad-network.active {
+    display: block;
+}
+
+.ad-network-fallback {
+    display: none;
+}
+
+.ad-network-fallback.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ad-network-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.network-btn {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: all 0.3s ease;
+}
+
+.network-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.network-btn.active {
+    background: #ff5722;
+    border-color: #ff5722;
+}
 </style>
 </head>
 <body>
@@ -694,22 +744,48 @@ h1 {
 <strong>Please watch the ad below to continue</strong>
 </div>
 
+<!-- Ad Network Selector -->
+<div class="ad-network-selector" id="adNetworkSelector" style="display: none;">
+    <button class="network-btn" data-network="adsense">AdSense</button>
+    <button class="network-btn" data-network="adsterra">Adsterra</button>
+    <button class="network-btn" data-network="propeller">PropellerAds</button>
+    <button class="network-btn" data-network="monetag">Monetag</button>
+</div>
+
 <!-- AdSense Ad -->
-<ins class="adsbygoogle"
-style="display:block; width: 100%; height: 250px;"
-data-ad-client="ca-pub-4494471028788825"
-data-ad-slot="1234567890"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
+<div class="ad-network" id="adsenseAd">
+    <ins class="adsbygoogle"
+    style="display:block; width: 100%; height: 250px;"
+    data-ad-client="ca-pub-4494471028788825"
+    data-ad-slot="1234567890"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+</div>
+
+<!-- Adsterra Ad -->
+<div class="ad-network" id="adsterraAd">
+    <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
+</div>
+
+<!-- PropellerAds Ad -->
+<div class="ad-network" id="propellerAd">
+    <div id="propeller-ad-container"></div>
+</div>
+
+<!-- Monetag Ad -->
+<div class="ad-network" id="monetagAd">
+    <div id="monetag-ad-container"></div>
+</div>
 
 <!-- Fallback Ad Banner -->
-<div class="ad-banner" id="fallbackAd">
+<div class="ad-banner ad-network-fallback" id="fallbackAd">
 <div class="ad-placeholder">
 <h3>🎥 SPECIAL OFFER!</h3>
 <p>Watch this ad to unlock premium content</p>
 <button class="ad-btn">Watch Now</button>
 </div>
 </div>
+
 </div>
 
 <!-- Smartlink Ad -->
@@ -765,6 +841,7 @@ Click below to trigger popunder ads:
 let countdown = 15;
 let countdownComplete = false;
 let adVerified = false;
+let currentAdNetwork = 'adsense';
 const countdownEl = document.getElementById("countdown");
 const progressBar = document.getElementById("progressBar");
 const continueBtn = document.getElementById("continueBtn");
@@ -776,6 +853,15 @@ const statusText = document.getElementById("statusText");
 const cookieConsent = document.getElementById("cookieConsent");
 const cookieAccept = document.getElementById("cookieAccept");
 const cookieReject = document.getElementById("cookieReject");
+const adNetworkSelector = document.getElementById("adNetworkSelector");
+const networkButtons = document.querySelectorAll('.network-btn');
+
+// Ad network elements
+const adsenseAd = document.getElementById("adsenseAd");
+const adsterraAd = document.getElementById("adsterraAd");
+const propellerAd = document.getElementById("propellerAd");
+const monetagAd = document.getElementById("monetagAd");
+const fallbackAd = document.getElementById("fallbackAd");
 
 // Check if user is in Europe (GDPR compliance)
 function isUserInEurope() {
@@ -792,83 +878,18 @@ function isUserInEurope() {
     return europeanTimezones.includes(timezone);
 }
 
-// Initialize AdSense
-(adsbygoogle = window.adsbygoogle || []).push({});
-
-// Show cookie consent for European users
-if (isUserInEurope()) {
-    setTimeout(() => {
-        cookieConsent.style.display = 'block';
-    }, 1000);
-} else {
-    // Load social bar for non-European users
-    loadSocialBar();
-}
-
-// Cookie consent handlers
-cookieAccept.addEventListener('click', function() {
-    cookieConsent.style.display = 'none';
-    localStorage.setItem('cookiesAccepted', 'true');
-    loadSocialBar();
-});
-
-cookieReject.addEventListener('click', function() {
-    cookieConsent.style.display = 'none';
-    localStorage.setItem('cookiesAccepted', 'false');
-});
-
-// Load social bar only if cookies are accepted and user is not in Europe
-function loadSocialBar() {
-    const cookiesAccepted = localStorage.getItem('cookiesAccepted');
-    if (cookiesAccepted !== 'false' && !isUserInEurope()) {
-        // Load your social bar script
-        const script = document.createElement('script');
-        script.src = '//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js';
-        script.type = 'text/javascript';
-        document.head.appendChild(script);
-    }
-}
-
-// Countdown
-const timer = setInterval(() => {
-    countdown--;
-    countdownEl.textContent = countdown;
-    progressBar.style.width = ((15 - countdown)/15*100) + "%";
+// Initialize Ad Networks
+function initializeAdNetworks() {
+    // Initialize AdSense
+    (adsbygoogle = window.adsbygoogle || []).push({});
     
-    if(countdown <= 0){
-        clearInterval(timer);
-        countdownEl.textContent = "Ready!";
-        countdownComplete = true;
-        statusText.textContent = "Countdown complete! Please watch the ad to continue.";
-        adVerification.style.display = "block";
-
-        // Show smartlink ad
-        smartlinkAd.style.display = "block";
-
-        // Enable continue button if ad already verified
-        if(adVerified){
-            continueBtn.disabled = false;
-        }
-    }
-}, 1000);
-
-// Smartlink ad click
-smartlinkAd.addEventListener("click", function(){
-    // Use your actual popunder script URL here
-    const adTab = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
-    if(adTab){
-        statusText.textContent = "Ad opened in new tab. Please watch it completely...";
-        setTimeout(function(){
-            adCheckbox.checked = true;
-            adVerified = true;
-            if(countdownComplete){
-                continueBtn.disabled = false;
-            }
-            statusText.textContent = "Ad completed! You can now continue.";
-            window.focus();
-            
-            // Trigger popunder after ad completion
-            triggerPopunder();
-        }, 2000); // 2 sec simulated watch
-    } else {
-        alert
+    // Initialize Adsterra
+    if (typeof window.atOptions !== 'undefined') {
+        window.atOptions = {
+            'key' : '8d5c69d04dbd1bc1a95e35946b934ff5',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    
