@@ -18,39 +18,42 @@ crossorigin="anonymous"></script>
 
 <style>
 /* Base styles */
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow-x:hidden;}
-.container{max-width:500px;width:100%;text-align:center;}
-.card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:40px 30px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.2);position:relative;z-index:10;}
-h1{font-size:2.2em;margin-bottom:15px;}
-.countdown{font-size:3.5em;margin:30px 0;color:#ffeb3b;font-weight:bold;}
-.ad-container{background:rgba(255,255,255,0.05);padding:20px;margin:20px 0;border-radius:15px;}
-.ad-unit{min-height:250px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;}
-.continue-btn{background:linear-gradient(45deg,#FF416C,#FF4B2B);color:white;padding:18px;border-radius:50px;text-decoration:none;display:block;margin:25px 0;font-weight:bold;transition:transform 0.3s ease;border:none;cursor:pointer;font-size:1.1em;width:100%;opacity:0.7;}
-.continue-btn:hover{transform:scale(1.05);}
-.continue-btn:disabled{background:#666;cursor:not-allowed;transform:none;opacity:0.7;}
-.popunder-trigger{background:linear-gradient(45deg,#4CAF50,#45a049);color:white;border:none;padding:12px 20px;border-radius:25px;cursor:pointer;margin:10px 0;font-size:0.9em;transition:all 0.3s ease;width:100%;}
-.popunder-trigger:hover{transform:scale(1.05);background:linear-gradient(45deg,#45a049,#4CAF50);}
-.progress-container{width:100%;height:10px;background:rgba(255,255,255,0.2);border-radius:5px;margin:20px 0;overflow:hidden;}
-.progress-bar{height:100%;background:linear-gradient(90deg,#FF416C,#FF4B2B);width:0%;transition:width 0.5s ease;}
-.loading-dots{display:inline-block;position:relative;width:80px;height:80px;margin:20px auto;}
-.loading-dots div{position:absolute;top:33px;width:13px;height:13px;border-radius:50%;background:#ffeb3b;animation-timing-function:cubic-bezier(0,1,1,0);}
-.loading-dots div:nth-child(1){left:8px;animation:loading-dots1 0.6s infinite;}
-.loading-dots div:nth-child(2){left:8px;animation:loading-dots2 0.6s infinite;}
-.loading-dots div:nth-child(3){left:32px;animation:loading-dots2 0.6s infinite;}
-.loading-dots div:nth-child(4){left:56px;animation:loading-dots3 0.6s infinite;}
-@keyframes loading-dots1{0%{transform:scale(0);}100%{transform:scale(1);}}
-@keyframes loading-dots3{0%{transform:scale(1);}100%{transform:scale(0);}}
-@keyframes loading-dots2{0%{transform:translate(0,0);}100%{transform:translate(24px,0);}}
-.ad-banner{width:100%;height:100px;background:linear-gradient(45deg,#ff6b6b,#ee5a24);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:bold;margin:10px 0;cursor:pointer;transition:transform 0.3s ease;}
-.ad-banner:hover{transform:scale(1.02);}
-.social-bar-container{position:fixed;bottom:20px;left:20px;z-index:1000;}
-.adsterra-notice{background:rgba(255,255,255,0.1);padding:10px;border-radius:8px;margin:10px 0;font-size:0.8em;opacity:0.8;}
-.smartlink-ad{background:linear-gradient(45deg,#9C27B0,#673AB7);color:white;padding:15px;border-radius:10px;margin:15px 0;cursor:pointer;transition:all 0.3s ease;}
-.smartlink-ad:hover{transform:scale(1.02);background:linear-gradient(45deg,#8E24AA,#5E35B1);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow-x:hidden}
+.container{max-width:500px;width:100%;text-align:center}
+.card{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);padding:40px 30px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.2);position:relative;z-index:10}
+h1{font-size:2.2em;margin-bottom:15px}
+.countdown{font-size:3.5em;margin:30px 0;color:#ffeb3b;font-weight:bold}
+.ad-container{background:rgba(255,255,255,0.05);padding:20px;margin:20px 0;border-radius:15px}
+.ad-unit{min-height:250px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
+.continue-btn{background:linear-gradient(45deg,#FF416C,#FF4B2B);color:white;padding:18px;border-radius:50px;text-decoration:none;display:block;margin:25px 0;font-weight:bold;transition:transform 0.3s ease;border:none;cursor:pointer;font-size:1.1em;width:100%}
+.continue-btn:disabled{background:#666;cursor:not-allowed;transform:none}
+.progress-container{width:100%;height:10px;background:rgba(255,255,255,0.2);border-radius:5px;margin:20px 0;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#FF416C,#FF4B2B);width:0%;transition:width 0.5s ease}
+.loading-dots{display:inline-block;position:relative;width:80px;height:80px;margin:20px auto}
+.loading-dots div{position:absolute;top:33px;width:13px;height:13px;border-radius:50%;background:#ffeb3b;animation-timing-function:cubic-bezier(0,1,1,0)}
+.loading-dots div:nth-child(1){left:8px;animation:loading-dots1 0.6s infinite}
+.loading-dots div:nth-child(2){left:8px;animation:loading-dots2 0.6s infinite}
+.loading-dots div:nth-child(3){left:32px;animation:loading-dots2 0.6s infinite}
+.loading-dots div:nth-child(4){left:56px;animation:loading-dots3 0.6s infinite}
+@keyframes loading-dots1{0%{transform:scale(0)}100%{transform:scale(1)}}
+@keyframes loading-dots2{0%{transform:translate(0,0)}100%{transform:translate(24px,0)}}
+@keyframes loading-dots3{0%{transform:scale(1)}100%{transform:scale(0)}}
+.nav{position:absolute;top:20px;right:20px;z-index:1000}
+.nav a{color:white;text-decoration:none;margin-left:15px;font-size:0.9em;opacity:0.8}
+.nav a:hover{opacity:1}
+.popunder-trigger{background:linear-gradient(45deg,#4CAF50,#45a049);color:white;border:none;padding:12px 20px;border-radius:25px;cursor:pointer;margin:10px 0;font-size:0.9em;transition:all 0.3s ease;width:100%}
+.popunder-trigger:hover{transform:scale(1.05);background:linear-gradient(45deg,#45a049,#4CAF50)}
+.smartlink-ad{background:linear-gradient(45deg,#9C27B0,#673AB7);color:white;padding:15px;border-radius:10px;margin:15px 0;cursor:pointer;transition:all 0.3s ease}
+.smartlink-ad:hover{transform:scale(1.02);background:linear-gradient(45deg,#8E24AA,#5E35B1)}
 </style>
 </head>
 <body>
+
+<div class="nav">
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="terms-of-service.html">Terms</a>
+</div>
 
 <div class="container">
 <div class="card">
@@ -60,73 +63,139 @@ h1{font-size:2.2em;margin-bottom:15px;}
 <div class="countdown" id="countdown">15</div>
 <p id="statusText">Please wait while we prepare your content...</p>
 
-<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="progress-container">
+<div class="progress-bar" id="progressBar"></div>
+</div>
 
-<div class="loading-dots"><div></div><div></div><div></div><div></div></div>
+<div class="loading-dots">
+<div></div><div></div><div></div><div></div>
+</div>
 
 <div class="ad-container">
 <div class="ad-unit">
-<div class="ad-notice"><strong>Please watch the ad below to continue</strong></div>
+<div class="ad-notice">
+<strong>Please watch the ad below to continue</strong>
+</div>
 
-<!-- AdSense -->
+<!-- AdSense Ad -->
 <ins class="adsbygoogle"
-     style="display:block; width:100%; height:250px;"
-     data-ad-client="ca-pub-4494471028788825"
-     data-ad-slot="1234567890"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
+style="display:block; width: 100%; height: 250px;"
+data-ad-client="ca-pub-4494471028788825"
+data-ad-slot="1234567890"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
 
-<div class="ad-banner" id="fallbackAd" style="display:none;" onclick="window.open('https://t4tsa.cc/', '_blank')">
-🎥 SPECIAL OFFER: Click to watch ad and continue!
+<!-- Fallback Ad Banner -->
+<div class="ad-banner" onclick="openAd()" style="display: none;" id="fallbackAd">
+<div>🎥 SPECIAL OFFER: Click to watch ad and continue!</div>
 </div>
 </div>
 
-<div class="smartlink-ad" id="smartlinkAd" style="display:none;">
+<!-- Smartlink Ad -->
+<div class="smartlink-ad" id="smartlinkAd">
 <h4>🎁 Exclusive Offer!</h4>
 <p>Click to reveal special content</p>
 <small>Sponsored Content</small>
 </div>
 
+<!-- Popunder trigger -->
 <div style="margin-top:15px;">
-<p style="font-size:0.9em; margin-bottom:10px; opacity:0.8;">Click below to trigger popunder ads:</p>
+<p style="font-size:0.9em;margin-bottom:10px;opacity:0.8;">
+Click below to trigger popunder ads:
+</p>
 <button class="popunder-trigger" id="manualPopunder">Show Popunder Ad</button>
 </div>
 
-<div class="status-message" id="popunderStatus"></div>
+</div>
+
+<div class="ad-verification" id="adVerification">
+<h3>Ad Verification Required</h3>
+<p>Please confirm you've watched the advertisement to continue</p>
+<div class="verification-checkbox">
+<input type="checkbox" id="adWatched">
+<label for="adWatched">I have watched the advertisement</label>
+</div>
 </div>
 
 <button class="continue-btn" id="continueBtn" disabled>Access Premium Content 🎥</button>
 
-<div style="margin-top:20px; opacity:0.7; font-size:0.85em;">
-<p>By continuing, you agree to our <a href="#" style="color:#ffeb3b;">Terms</a> and <a href="#" style="color:#ffeb3b;">Privacy Policy</a></p>
+<div style="margin-top:20px;opacity:0.7;font-size:0.85em;">
+<p>By continuing, you agree to our <a href="terms-of-service.html" style="color:#ffeb3b;">Terms</a> and <a href="privacy-policy.html" style="color:#ffeb3b;">Privacy Policy</a></p>
 </div>
-
 </div>
 </div>
 
 <script>
-// Variables
+// Countdown variables
 let countdown = 15;
-let popunderShown = false;
-const continueBtn = document.getElementById("continueBtn");
+let countdownComplete = false;
+let adVerified = false;
 const countdownEl = document.getElementById("countdown");
 const progressBar = document.getElementById("progressBar");
-const smartlinkUrl = "https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832";
-const finalDestination = "https://t4tsa.cc/";
+const continueBtn = document.getElementById("continueBtn");
+const smartlinkAd = document.getElementById("smartlinkAd");
+const popunderBtn = document.getElementById("manualPopunder");
+const adCheckbox = document.getElementById("adWatched");
 
 // Countdown
-const interval = setInterval(() => {
+const timer = setInterval(() => {
     countdown--;
     countdownEl.textContent = countdown;
-    progressBar.style.width = ((15 - countdown) / 15 * 100) + "%";
-
-    if (countdown <= 0) {
-        clearInterval(interval);
+    progressBar.style.width = ((15 - countdown)/15*100) + "%";
+    if(countdown <= 0){
+        clearInterval(timer);
         countdownEl.textContent = "Ready!";
-        continueBtn.disabled = false;
-        continueBtn.style.opacity = 1;
+        countdownComplete = true;
+        document.getElementById("statusText").textContent = "Countdown complete! Please watch the ad to continue.";
+        document.getElementById("adVerification").style.display = "block";
 
-        // Trigger popunder automatically
-        if (!popunderShown) {
-            if (typeof window.popunderTrigger === "function") {
-                window.popunderTrigger();
+        // Show smartlink ad
+        smartlinkAd.style.display = "block";
+
+        // Enable continue button if ad already verified
+        if(adVerified){
+            continueBtn.disabled = false;
+        }
+    }
+}, 1000);
+
+// Smartlink ad click
+smartlinkAd.addEventListener("click", function(){
+    const adTab = window.open("https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832", "_blank");
+    if(adTab){
+        setTimeout(function(){
+            adCheckbox.checked = true;
+            adVerified = true;
+            if(countdownComplete){
+                continueBtn.disabled = false;
+            }
+            alert("Ad completed! You can now continue.");
+            window.focus();
+        }, 2000); // 2 sec simulated watch
+    } else {
+        alert("Popup blocked! Allow popups to continue.");
+    }
+});
+
+// Popunder manual trigger
+popunderBtn.addEventListener("click", function(){
+    try{
+        const popunderWindow = window.open("", "_blank", "width=600,height=400,left=100,top=100");
+        if(popunderWindow){
+            popunderWindow.location.href = "https://example.com";
+            setTimeout(() => { window.focus(); }, 500);
+        } else {
+            alert("Popunder blocked! Allow popups.");
+        }
+    } catch(err){
+        console.error("Popunder error:", err);
+    }
+});
+
+// Continue button action
+continueBtn.addEventListener("click", function(){
+    window.location.href = "https://t4tsa.cc/";
+});
+</script>
+</body>
+</html>
