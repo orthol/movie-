@@ -6,10 +6,6 @@
 <title>Movie Portal - Premium Entertainment Access</title>
 <meta name="description" content="Movie Portal provides exclusive access to premium entertainment content, movie updates, and film recommendations.">
 
-<!-- AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
-crossorigin="anonymous"></script>
-
 <style>
 /* Base styles - Mobile First */
 * {
@@ -664,56 +660,6 @@ h1 {
     transform: scale(1.05);
 }
 
-/* Ad network styling */
-.ad-network {
-    width: 100%;
-    height: 100%;
-    display: none;
-}
-
-.ad-network.active {
-    display: block;
-}
-
-.ad-network-fallback {
-    display: none;
-}
-
-.ad-network-fallback.active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.ad-network-selector {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.network-btn {
-    padding: 8px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    color: white;
-    cursor: pointer;
-    font-size: 0.8em;
-    transition: all 0.3s ease;
-}
-
-.network-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.network-btn.active {
-    background: #ff5722;
-    border-color: #ff5722;
-}
-
 /* Adsterra specific styling */
 #adsterra-ad-container {
     width: 100%;
@@ -725,6 +671,29 @@ h1 {
 
 #adsterra-ad-container iframe {
     border-radius: 8px;
+}
+
+.ad-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.ad-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #ffeb3b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 </head>
@@ -757,31 +726,17 @@ h1 {
 <strong>Please watch the ad below to continue</strong>
 </div>
 
-<!-- Ad Network Selector -->
-<div class="ad-network-selector" id="adNetworkSelector">
-    <button class="network-btn" data-network="adsense">AdSense</button>
-    <button class="network-btn" data-network="adsterra">Adsterra</button>
-</div>
-
-<!-- AdSense Ad -->
-<div class="ad-network active" id="adsenseAd">
-    <ins class="adsbygoogle"
-    style="display:block; width: 100%; height: 250px;"
-    data-ad-client="ca-pub-4494471028788825"
-    data-ad-slot="1234567890"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-</div>
-
-<!-- Adsterra Ad -->
-<div class="ad-network" id="adsterraAd">
-    <div id="adsterra-ad-container">
-        <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
+<!-- Adsterra Ad Container -->
+<div id="adsterra-ad-container">
+    <div class="ad-loading">
+        <div class="ad-loading-spinner"></div>
+        <p>Loading advertisement...</p>
     </div>
+    <div id="container-8d5c69d04dbd1bc1a95e35946b934ff5"></div>
 </div>
 
 <!-- Fallback Ad Banner -->
-<div class="ad-banner ad-network-fallback" id="fallbackAd">
+<div class="ad-banner" id="fallbackAd">
 <div class="ad-placeholder">
 <h3>🎥 SPECIAL OFFER!</h3>
 <p>Watch this ad to unlock premium content</p>
@@ -844,7 +799,6 @@ Click below to trigger popunder ads:
 let countdown = 15;
 let countdownComplete = false;
 let adVerified = false;
-let currentAdNetwork = 'adsense';
 const countdownEl = document.getElementById("countdown");
 const progressBar = document.getElementById("progressBar");
 const continueBtn = document.getElementById("continueBtn");
@@ -856,13 +810,8 @@ const statusText = document.getElementById("statusText");
 const cookieConsent = document.getElementById("cookieConsent");
 const cookieAccept = document.getElementById("cookieAccept");
 const cookieReject = document.getElementById("cookieReject");
-const adNetworkSelector = document.getElementById("adNetworkSelector");
-const networkButtons = document.querySelectorAll('.network-btn');
-
-// Ad network elements
-const adsenseAd = document.getElementById("adsenseAd");
-const adsterraAd = document.getElementById("adsterraAd");
 const fallbackAd = document.getElementById("fallbackAd");
+const fallbackAdBtn = fallbackAd.querySelector('.ad-btn');
 
 // Check if user is in Europe (GDPR compliance)
 function isUserInEurope() {
@@ -878,12 +827,11 @@ function isUserInEurope() {
     return europeanTimezones.includes(timezone);
 }
 
-// Initialize Ad Networks
-function initializeAdNetworks() {
-    // Initialize AdSense
-    (adsbygoogle = window.adsbygoogle || []).push({});
+// Initialize Adsterra Ad
+function initializeAdsterra() {
+    statusText.textContent = "Loading advertisement...";
     
-    // Initialize Adsterra
+    // Adsterra configuration
     window.atOptions = {
         'key' : '8d5c69d04dbd1bc1a95e35946b934ff5',
         'format' : 'iframe',
@@ -895,8 +843,50 @@ function initializeAdNetworks() {
     const adsterraScript = document.createElement('script');
     adsterraScript.type = 'text/javascript';
     adsterraScript.src = `//www.highperformanceformat.com/8d5c69d04dbd1bc1a95e35946b934ff5/invoke.js`;
+    
     adsterraScript.onload = function() {
-        console.log('Adsterra script loaded successfully');
+        console.log('Adsterra ad loaded successfully');
+        statusText.textContent = "Advertisement loaded! Please watch to continue.";
+        
+        // Hide loading spinner after ad loads
+        setTimeout(() => {
+            const loadingElement = document.querySelector('.ad-loading');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
+        }, 1000);
     };
+    
     adsterraScript.onerror = function() {
-        console.log('Adsterra script fail
+        console.log('Adsterra ad failed to load, showing fallback');
+        statusText.textContent = "Advertisement ready! Click to watch.";
+        showFallbackAd();
+    };
+    
+    document.head.appendChild(adsterraScript);
+    
+    // Check if ad loaded properly after 3 seconds
+    setTimeout(() => {
+        const adContainer = document.getElementById('container-8d5c69d04dbd1bc1a95e35946b934ff5');
+        if (!adContainer || adContainer.offsetHeight < 50) {
+            console.log('Adsterra ad not visible, showing fallback');
+            showFallbackAd();
+        }
+    }, 3000);
+}
+
+// Show fallback ad
+function showFallbackAd() {
+    fallbackAd.style.display = 'block';
+    const loadingElement = document.querySelector('.ad-loading');
+    if (loadingElement) {
+        loadingElement.style.display = 'none';
+    }
+}
+
+// Show cookie consent for European users
+if (isUserInEurope()) {
+    setTimeout(() => {
+        cookieConsent.style.display = 'block';
+    }, 1000);
+} 
