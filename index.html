@@ -92,7 +92,8 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            padding: 20px;
+            padding: 15px;
+            position: relative;
         }
 
         .ad-notice {
@@ -187,14 +188,14 @@
             text-decoration: none;
         }
 
-        /* Banner Ad Styling */
+        /* Banner Ad Styling - INSIDE THE BOX */
         #banner-ad-container {
             width: 100%;
             height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
+            background: transparent;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -222,6 +223,15 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Social Bar Styling */
+        .social-bar-container {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
         @media (max-width: 768px) {
             .card {
                 padding: 20px;
@@ -234,10 +244,17 @@
             .countdown {
                 font-size: 2.8em;
             }
+
+            .social-bar-container {
+                display: none; /* Hide social bar on mobile */
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Social Bar Container -->
+    <div class="social-bar-container" id="socialBarContainer"></div>
+
     <div class="container">
         <div class="card">
             <h1>🎬 Movie Portal</h1>
@@ -256,14 +273,13 @@
                         <strong>Advertisement will open automatically</strong>
                     </div>
                     
-                    <!-- Banner Ad Container -->
+                    <!-- Banner Ad Container INSIDE THE BOX -->
                     <div id="banner-ad-container">
                         <div class="ad-loading" id="adLoading">
                             <div class="ad-loading-spinner"></div>
-                            <p>Preparing Advertisement...</p>
+                            <p>Loading Banner Ad...</p>
                         </div>
-                        <!-- Adsterra Banner Ad -->
-                        <div id="container-7bc0656dac291cc170726b05d6a6d2e7"></div>
+                        <!-- Adsterra Banner Ad WILL APPEAR HERE -->
                     </div>
                 </div>
 
@@ -308,12 +324,6 @@
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js"></script>
 
-    <!-- Social Bar Script -->
-    <script type="text/javascript" src="//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js"></script>
-
-    <!-- Popunder Script -->
-    <script type="text/javascript" src="//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js"></script>
-
     <script>
         // Simple and reliable implementation
         let countdown = 15;
@@ -329,6 +339,8 @@
         const adVerification = document.getElementById('adVerification');
         const popunderBtn = document.getElementById('manualPopunder');
         const adLoading = document.getElementById('adLoading');
+        const bannerAdContainer = document.getElementById('banner-ad-container');
+        const socialBarContainer = document.getElementById('socialBarContainer');
 
         // Start countdown immediately
         function startCountdown() {
@@ -354,6 +366,68 @@
             }, 1000);
         }
 
+        // Load Banner Ad properly
+        function loadBannerAd() {
+            // Create the banner ad container
+            const bannerDiv = document.createElement('div');
+            bannerDiv.id = 'container-7bc0656dac291cc170726b05d6a6d2e7';
+            bannerDiv.style.width = '100%';
+            bannerDiv.style.height = '250px';
+            bannerDiv.style.display = 'flex';
+            bannerDiv.style.alignItems = 'center';
+            bannerDiv.style.justifyContent = 'center';
+            
+            bannerAdContainer.appendChild(bannerDiv);
+            
+            // Check if banner loaded
+            setTimeout(() => {
+                const adContainer = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
+                if (adContainer && adContainer.innerHTML !== '' && adContainer.offsetHeight > 50) {
+                    console.log('Banner ad loaded successfully');
+                    adLoading.style.display = 'none';
+                    statusText.textContent = "Banner ad loaded! Countdown in progress...";
+                } else {
+                    console.log('Banner ad not loaded, showing fallback');
+                    showFallbackAd();
+                }
+            }, 3000);
+        }
+
+        // Load Social Bar properly
+        function loadSocialBar() {
+            const socialScript = document.createElement('script');
+            socialScript.type = 'text/javascript';
+            socialScript.src = '//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js';
+            
+            socialScript.onload = function() {
+                console.log('Social bar script loaded');
+                // The social bar should automatically appear
+            };
+            
+            socialScript.onerror = function() {
+                console.log('Social bar script failed to load');
+            };
+            
+            document.head.appendChild(socialScript);
+        }
+
+        // Load Popunder properly
+        function loadPopunder() {
+            const popunderScript = document.createElement('script');
+            popunderScript.type = 'text/javascript';
+            popunderScript.src = '//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js';
+            
+            popunderScript.onload = function() {
+                console.log('Popunder script loaded');
+            };
+            
+            popunderScript.onerror = function() {
+                console.log('Popunder script failed to load');
+            };
+            
+            document.head.appendChild(popunderScript);
+        }
+
         // Auto open all ads when countdown finishes
         function autoOpenAds() {
             console.log('Auto opening ads...');
@@ -362,11 +436,7 @@
             setTimeout(() => {
                 const smartlinkWindow = window.open('https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832', '_blank');
                 if (smartlinkWindow) {
-                    statusText.textContent = "Special offer opened! Closing this window...";
-                    // Close after 2 seconds
-                    setTimeout(() => {
-                        smartlinkWindow.close();
-                    }, 2000);
+                    statusText.textContent = "Special offer opened!";
                 }
             }, 500);
             
@@ -390,28 +460,14 @@
             }, 3000);
         }
 
-        // Check if banner ad loaded
-        function checkBannerAd() {
-            setTimeout(() => {
-                const adContainer = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
-                if (adContainer && adContainer.innerHTML !== '' && adContainer.offsetHeight > 50) {
-                    console.log('Banner ad loaded successfully');
-                    adLoading.style.display = 'none';
-                    statusText.textContent = "Banner ad loaded! Countdown in progress...";
-                } else {
-                    console.log('Banner ad not loaded, showing fallback');
-                    showFallbackAd();
-                }
-            }, 2000);
-        }
-
         // Show fallback ad if banner fails
         function showFallbackAd() {
             adLoading.innerHTML = `
                 <div style="text-align: center; padding: 20px;">
                     <div style="font-size: 3em; margin-bottom: 15px;">🎥</div>
                     <h3>Advertisement</h3>
-                    <p>Ads will open automatically after countdown</p>
+                    <p>Banner ads will load here</p>
+                    <p style="font-size: 0.8em; opacity: 0.7;">Ads open automatically after countdown</p>
                 </div>
             `;
         }
@@ -462,7 +518,9 @@
         window.addEventListener('load', function() {
             console.log('Page loaded - starting countdown and ads');
             startCountdown();
-            checkBannerAd();
+            loadBannerAd();
+            loadSocialBar();
+            loadPopunder();
             
             // Auto-trigger popunder after 16 seconds
             setTimeout(() => {
