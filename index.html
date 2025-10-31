@@ -181,6 +181,41 @@
             text-decoration: none;
         }
 
+        /* Banner Ad Styling */
+        #banner-ad-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .ad-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .ad-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffeb3b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .card {
                 padding: 20px;
@@ -212,16 +247,17 @@
             <div class="ad-container">
                 <div class="ad-unit">
                     <div class="ad-notice">
-                        <strong>Please watch the ad below to continue</strong>
+                        <strong>Please watch the banner ad below to continue</strong>
                     </div>
                     
-                    <!-- Adsterra Ad -->
-                    <div id="adsterra-ad">
-                        <div style="width: 300px; height: 250px; background: rgba(0,0,0,0.3); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                            <div style="font-size: 2em; margin-bottom: 10px;">🎥</div>
-                            <p>Advertisement Loading...</p>
-                            <p style="font-size: 0.8em; opacity: 0.7;">Click to simulate ad watch</p>
+                    <!-- Banner Ad Container -->
+                    <div id="banner-ad-container">
+                        <div class="ad-loading" id="adLoading">
+                            <div class="ad-loading-spinner"></div>
+                            <p>Loading Advertisement...</p>
                         </div>
+                        <!-- Adsterra Banner Ad will load here -->
+                        <div id="adsterra-banner-ad"></div>
                     </div>
                 </div>
 
@@ -273,7 +309,8 @@
         const adVerification = document.getElementById('adVerification');
         const adCheckbox = document.getElementById('adWatched');
         const popunderBtn = document.getElementById('manualPopunder');
-        const adsterraAd = document.getElementById('adsterra-ad');
+        const adLoading = document.getElementById('adLoading');
+        const bannerAdContainer = document.getElementById('banner-ad-container');
 
         // Start countdown immediately
         function startCountdown() {
@@ -286,7 +323,7 @@
                     clearInterval(timer);
                     countdownComplete = true;
                     countdownEl.textContent = "Ready!";
-                    statusText.textContent = "Countdown complete! Please watch the ad to continue.";
+                    statusText.textContent = "Countdown complete! Please watch the banner ad to continue.";
                     adVerification.style.display = 'block';
                     smartlinkAd.style.display = 'block';
                     
@@ -297,6 +334,76 @@
                 }
             }, 1000);
         }
+
+        // Load Adsterra Banner Ad
+        function loadBannerAd() {
+            // Adsterra configuration
+            window.atOptions = {
+                'key' : '7bc0656dac291cc170726b05d6a6d2e7',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+            
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = '//pawsdefenseneigh.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js';
+            
+            script.onload = function() {
+                console.log('Adsterra banner ad loaded successfully');
+                // Hide loading spinner after ad loads
+                setTimeout(() => {
+                    adLoading.style.display = 'none';
+                    statusText.textContent = "Banner ad loaded! Please watch it to continue.";
+                }, 1000);
+            };
+            
+            script.onerror = function() {
+                console.log('Adsterra banner ad failed to load');
+                showFallbackAd();
+            };
+            
+            document.head.appendChild(script);
+            
+            // Check if ad loaded properly after 3 seconds
+            setTimeout(() => {
+                const adContainer = document.getElementById('adsterra-banner-ad');
+                if (!adContainer || adContainer.innerHTML === '' || adContainer.offsetHeight < 50) {
+                    console.log('Banner ad not visible, showing fallback');
+                    showFallbackAd();
+                }
+            }, 3000);
+        }
+
+        // Show fallback ad if banner fails
+        function showFallbackAd() {
+            adLoading.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">🎥</div>
+                    <h3>Watch This Ad</h3>
+                    <p>Click the button below to watch advertisement</p>
+                    <button onclick="simulateAdWatch()" style="background: #ff5722; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; margin-top: 10px;">
+                        Watch Advertisement
+                    </button>
+                </div>
+            `;
+            statusText.textContent = "Advertisement ready! Click to watch.";
+        }
+
+        // Simulate ad watch for fallback
+        window.simulateAdWatch = function() {
+            statusText.textContent = "Playing advertisement...";
+            
+            setTimeout(() => {
+                adCheckbox.checked = true;
+                adVerified = true;
+                if (countdownComplete) {
+                    continueBtn.disabled = false;
+                }
+                statusText.textContent = "Ad completed! You can now continue.";
+            }, 2000);
+        };
 
         // Ad verification checkbox
         adCheckbox.addEventListener('change', function() {
@@ -349,20 +456,6 @@
             }
         });
 
-        // Adsterra ad click simulation
-        adsterraAd.addEventListener('click', function() {
-            statusText.textContent = "Playing advertisement...";
-            
-            setTimeout(() => {
-                adCheckbox.checked = true;
-                adVerified = true;
-                if (countdownComplete) {
-                    continueBtn.disabled = false;
-                }
-                statusText.textContent = "Ad completed! You can now continue.";
-            }, 2000);
-        });
-
         // Continue button
         continueBtn.addEventListener('click', function() {
             // Trigger popunder before redirect
@@ -399,6 +492,7 @@
         window.addEventListener('load', function() {
             console.log('Page loaded - starting countdown and ads');
             startCountdown();
+            loadBannerAd();
             loadExternalScripts();
             
             // Auto-trigger popunder after 16 seconds
