@@ -5,17 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Portal - Premium Entertainment Access</title>
     
-    <!-- Adsterra Configuration -->
-    <script type="text/javascript">
-        atOptions = {
-            'key' : '7bc0656dac291cc170726b05d6a6d2e7',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js"></script>
+    <!-- AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
+     crossorigin="anonymous"></script>
 
     <style>
         * {
@@ -195,8 +187,8 @@
             text-decoration: none;
         }
 
-        /* Banner Ad Styling */
-        .banner-ad-container {
+        /* AdSense Ad Styling */
+        .adsense-container {
             width: 100%;
             height: 250px;
             display: flex;
@@ -261,7 +253,7 @@
             <p class="subtitle">Your gateway to premium entertainment content</p>
 
             <div class="countdown" id="countdown">15</div>
-            <p id="statusText">Please wait while we prepare your content...</p>
+            <p id="statusText">Please watch the advertisement for 15 seconds to continue...</p>
 
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
@@ -270,17 +262,22 @@
             <div class="ad-container">
                 <div class="ad-unit">
                     <div class="ad-notice">
-                        <strong>Advertisement will open automatically</strong>
+                        <strong>Please watch the advertisement below</strong>
                     </div>
                     
-                    <!-- Banner Ad Container -->
-                    <div class="banner-ad-container">
+                    <!-- AdSense Ad Container -->
+                    <div class="adsense-container">
                         <div class="ad-loading" id="adLoading">
                             <div class="ad-loading-spinner"></div>
-                            <p>Loading Banner Advertisement...</p>
+                            <p>Loading Advertisement...</p>
                         </div>
-                        <!-- Adsterra Banner Ad Container - MUST EXIST BEFORE SCRIPT LOADS -->
-                        <div id="container-7bc0656dac291cc170726b05d6a6d2e7"></div>
+                        <!-- YOUR ADSENSE AD UNIT -->
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-4494471028788825"
+                             data-ad-slot="8623997024"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
                     </div>
                 </div>
 
@@ -301,8 +298,8 @@
             </div>
 
             <div class="ad-verification" id="adVerification">
-                <h3>Ad Completed Successfully!</h3>
-                <p>You can now continue to premium content</p>
+                <h3>Advertisement Completed!</h3>
+                <p>Thank you for watching. You can now continue.</p>
             </div>
 
             <button class="continue-btn" id="continueBtn" disabled>Access Premium Content 🎥</button>
@@ -328,7 +325,7 @@
         const popunderBtn = document.getElementById('manualPopunder');
         const adLoading = document.getElementById('adLoading');
 
-        // Start countdown immediately
+        // Start countdown for AD WATCHING
         function startCountdown() {
             const timer = setInterval(() => {
                 countdown--;
@@ -338,33 +335,35 @@
                 if (countdown <= 0) {
                     clearInterval(timer);
                     countdownComplete = true;
-                    countdownEl.textContent = "Ready!";
-                    statusText.textContent = "Opening advertisements automatically...";
+                    countdownEl.textContent = "Done!";
+                    statusText.textContent = "Thank you for watching the advertisement!";
                     adVerification.style.display = 'block';
                     smartlinkAd.style.display = 'block';
                     
-                    // AUTO OPEN ADS
-                    autoOpenAds();
-                    
-                    // Enable continue button
+                    // Enable continue button after watching ad
                     continueBtn.disabled = false;
+                    
+                    // Auto open additional ads after watching banner
+                    autoOpenAdditionalAds();
                 }
             }, 1000);
         }
 
-        // Check if banner ad loaded
-        function checkBannerAd() {
-            setTimeout(() => {
-                const adContainer = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
-                if (adContainer && adContainer.innerHTML !== '' && adContainer.offsetHeight > 50) {
-                    console.log('Banner ad loaded successfully');
+        // Initialize AdSense
+        function initializeAdSense() {
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                console.log('AdSense initialized with slot: 8623997024');
+                
+                // Hide loading after AdSense loads
+                setTimeout(() => {
                     adLoading.style.display = 'none';
-                    statusText.textContent = "Banner ad loaded! Countdown in progress...";
-                } else {
-                    console.log('Banner ad not loaded, showing fallback');
-                    showFallbackAd();
-                }
-            }, 3000);
+                    statusText.textContent = "Advertisement loaded! Please watch for 15 seconds...";
+                }, 2000);
+            } catch (error) {
+                console.log('AdSense error:', error);
+                showFallbackAd();
+            }
         }
 
         // Load Social Bar
@@ -383,17 +382,17 @@
             document.head.appendChild(popunderScript);
         }
 
-        // Auto open all ads when countdown finishes
-        function autoOpenAds() {
-            console.log('Auto opening ads...');
+        // Auto open additional ads after banner watching
+        function autoOpenAdditionalAds() {
+            console.log('Opening additional ads...');
             
             // Open smartlink ad
             setTimeout(() => {
                 const smartlinkWindow = window.open('https://pawsdefenseneigh.com/jkw1rm6r?key=0cbecd73a441d94361f1975264e27832', '_blank');
                 if (smartlinkWindow) {
-                    statusText.textContent = "Special offer opened!";
+                    statusText.textContent = "Thank you for watching! Opening special offer...";
                 }
-            }, 500);
+            }, 1000);
             
             // Open popunder
             setTimeout(() => {
@@ -407,25 +406,20 @@
                 } catch (error) {
                     console.log('Popunder auto-open failed');
                 }
-            }, 1500);
-            
-            // Final status update
-            setTimeout(() => {
-                statusText.textContent = "All ads completed! Click continue to access content.";
-            }, 3000);
+            }, 2000);
         }
 
-        // Show fallback ad if banner fails
+        // Show fallback ad if AdSense fails
         function showFallbackAd() {
             adLoading.innerHTML = `
                 <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 3em; margin-bottom: 15px;">🎥</div>
-                    <h3>Banner Advertisement</h3>
-                    <p>300x250px Banner Ad Space</p>
-                    <p style="font-size: 0.8em; opacity: 0.7;">Ads open automatically after countdown</p>
+                    <div style="font-size: 3em; margin-bottom: 15px;">📺</div>
+                    <h3>Advertisement</h3>
+                    <p>Please wait 15 seconds to continue</p>
+                    <p style="font-size: 0.8em; opacity: 0.7;">Watching advertisement...</p>
                 </div>
             `;
-            statusText.textContent = "Banner ad space ready! Countdown in progress...";
+            statusText.textContent = "Advertisement ready! Please watch for 15 seconds...";
         }
 
         // Smartlink ad click
@@ -461,9 +455,9 @@
 
         // Initialize everything when page loads
         window.addEventListener('load', function() {
-            console.log('Page loaded - starting countdown and ads');
+            console.log('Page loaded - starting ad watching countdown');
             startCountdown();
-            checkBannerAd();
+            initializeAdSense();
             loadSocialBar();
             loadPopunder();
         });
@@ -472,12 +466,12 @@
         setTimeout(() => {
             if (!countdownComplete) {
                 countdownComplete = true;
-                countdownEl.textContent = "Ready!";
-                statusText.textContent = "Opening advertisements...";
+                countdownEl.textContent = "Done!";
+                statusText.textContent = "Thank you for watching!";
                 adVerification.style.display = 'block';
                 smartlinkAd.style.display = 'block';
                 continueBtn.disabled = false;
-                autoOpenAds();
+                autoOpenAdditionalAds();
             }
         }, 16000);
     </script>
