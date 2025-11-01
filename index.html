@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Portal - Premium Entertainment Access</title>
+    
+    <!-- Adsterra Configuration -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '7bc0656dac291cc170726b05d6a6d2e7',
+            'format' : 'iframe',
+            'height' : 250,
+            'width' : 300,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -182,8 +195,8 @@
             text-decoration: none;
         }
 
-        /* Banner Ad Styling - PROPERLY INSIDE THE BOX */
-        #banner-ad-wrapper {
+        /* Banner Ad Styling */
+        .banner-ad-container {
             width: 100%;
             height: 250px;
             display: flex;
@@ -208,6 +221,7 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
+            z-index: 2;
         }
 
         .ad-loading-spinner {
@@ -218,14 +232,6 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 10px;
-        }
-
-        #adsterra-banner-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         @keyframes spin {
@@ -267,14 +273,14 @@
                         <strong>Advertisement will open automatically</strong>
                     </div>
                     
-                    <!-- Banner Ad Container PROPERLY INSIDE THE BOX -->
-                    <div id="banner-ad-wrapper">
+                    <!-- Banner Ad Container -->
+                    <div class="banner-ad-container">
                         <div class="ad-loading" id="adLoading">
                             <div class="ad-loading-spinner"></div>
                             <p>Loading Banner Advertisement...</p>
                         </div>
-                        <!-- Adsterra Banner Ad Container -->
-                        <div id="adsterra-banner-container"></div>
+                        <!-- Adsterra Banner Ad Container - MUST EXIST BEFORE SCRIPT LOADS -->
+                        <div id="container-7bc0656dac291cc170726b05d6a6d2e7"></div>
                     </div>
                 </div>
 
@@ -321,7 +327,6 @@
         const adVerification = document.getElementById('adVerification');
         const popunderBtn = document.getElementById('manualPopunder');
         const adLoading = document.getElementById('adLoading');
-        const bannerContainer = document.getElementById('adsterra-banner-container');
 
         // Start countdown immediately
         function startCountdown() {
@@ -347,44 +352,19 @@
             }, 1000);
         }
 
-        // Load Banner Ad properly INSIDE the container
-        function loadBannerAd() {
-            // Create the proper container for Adsterra
-            const adContainer = document.createElement('div');
-            adContainer.id = 'container-7bc0656dac291cc170726b05d6a6d2e7';
-            adContainer.style.width = '100%';
-            adContainer.style.height = '100%';
-            adContainer.style.display = 'flex';
-            adContainer.style.alignItems = 'center';
-            adContainer.style.justifyContent = 'center';
-            
-            bannerContainer.appendChild(adContainer);
-            
-            // Load Adsterra script
-            const adsterraScript = document.createElement('script');
-            adsterraScript.type = 'text/javascript';
-            adsterraScript.src = '//www.highperformanceformat.com/7bc0656dac291cc170726b05d6a6d2e7/invoke.js';
-            
-            adsterraScript.onload = function() {
-                console.log('Adsterra banner script loaded');
-                // Hide loading after ad loads
-                setTimeout(() => {
-                    const loadedAd = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
-                    if (loadedAd && loadedAd.innerHTML !== '' && loadedAd.offsetHeight > 50) {
-                        adLoading.style.display = 'none';
-                        statusText.textContent = "Banner ad loaded! Countdown in progress...";
-                    } else {
-                        showFallbackAd();
-                    }
-                }, 2000);
-            };
-            
-            adsterraScript.onerror = function() {
-                console.log('Adsterra banner script failed');
-                showFallbackAd();
-            };
-            
-            document.head.appendChild(adsterraScript);
+        // Check if banner ad loaded
+        function checkBannerAd() {
+            setTimeout(() => {
+                const adContainer = document.getElementById('container-7bc0656dac291cc170726b05d6a6d2e7');
+                if (adContainer && adContainer.innerHTML !== '' && adContainer.offsetHeight > 50) {
+                    console.log('Banner ad loaded successfully');
+                    adLoading.style.display = 'none';
+                    statusText.textContent = "Banner ad loaded! Countdown in progress...";
+                } else {
+                    console.log('Banner ad not loaded, showing fallback');
+                    showFallbackAd();
+                }
+            }, 3000);
         }
 
         // Load Social Bar
@@ -479,20 +459,11 @@
             }, 1000);
         });
 
-        // Initialize Adsterra configuration
-        window.atOptions = {
-            'key' : '7bc0656dac291cc170726b05d6a6d2e7',
-            'format' : 'iframe',
-            'height' : 250,
-            'width' : 300,
-            'params' : {}
-        };
-
         // Initialize everything when page loads
         window.addEventListener('load', function() {
             console.log('Page loaded - starting countdown and ads');
             startCountdown();
-            loadBannerAd();
+            checkBannerAd();
             loadSocialBar();
             loadPopunder();
         });
