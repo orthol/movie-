@@ -9,6 +9,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
      crossorigin="anonymous"></script>
 
+    <!-- Social Bar Script - LOAD IMMEDIATELY -->
+    <script type="text/javascript" src="//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -321,6 +324,9 @@
         </div>
     </div>
 
+    <!-- Popunder Script -->
+    <script type="text/javascript" src="//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js"></script>
+
     <script>
         // Simple and reliable implementation
         let countdown = 15;
@@ -397,22 +403,6 @@
                 console.log('AdSense ad not visible, showing fallback');
                 showFallbackAd();
             }
-        }
-
-        // Load Social Bar
-        function loadSocialBar() {
-            const socialScript = document.createElement('script');
-            socialScript.type = 'text/javascript';
-            socialScript.src = '//pawsdefenseneigh.com/ec/c0/88/ecc08815a6829b15e4fb449f2227fadd.js';
-            document.head.appendChild(socialScript);
-        }
-
-        // Load Popunder
-        function loadPopunder() {
-            const popunderScript = document.createElement('script');
-            popunderScript.type = 'text/javascript';
-            popunderScript.src = '//pl27951177.effectivegatecpm.com/8d/5c/69/8d5c69d04dbd1bc1a95e35946b934ff5.js';
-            document.head.appendChild(popunderScript);
         }
 
         // Auto open additional ads after banner watching
@@ -494,8 +484,9 @@
             console.log('Page loaded - starting ad watching countdown');
             startCountdown();
             initializeAdSense();
-            loadSocialBar();
-            loadPopunder();
+            
+            // Social bar is already loaded in the head, so it should appear immediately
+            console.log('Social bar script loaded in head - should appear immediately');
         });
 
         // Fallback: if countdown doesn't complete
