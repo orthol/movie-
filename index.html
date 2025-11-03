@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Portal - Premium Entertainment Access</title>
 
-    <!-- GENERIC ADSENSE SCRIPT (for test ads) -->
+    <!-- GENERIC ADSENSE SCRIPT (TEST MODE) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
     <!-- Social Bar -->
@@ -39,10 +39,10 @@
         .ad-loading-spinner {width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top:4px solid #ffeb3b;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px;}
         @keyframes spin {to{transform:rotate(360deg);}}
 
-        /* GDPR BANNER */
+        /* GDPR BANNER - ALWAYS VISIBLE ON FIRST LOAD */
         #cookieBanner {
             position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;color:white;padding:15px;z-index:9999;
-            text-align:center;font-size:14px;box-shadow:0 -2px 10px rgba(0,0,0,0.3);display:none;
+            text-align:center;font-size:14px;box-shadow:0 -2px 10px rgba(0,0,0,0.3);
         }
         #cookieSettings {
             display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:10000;
@@ -58,7 +58,7 @@
 </head>
 <body>
 
-<!-- GDPR COOKIE BANNER -->
+<!-- GDPR BANNER (SHOWS ON FIRST VISIT) -->
 <div id="cookieBanner">
     <p style="margin:0 0 10px;">
         We use cookies to show personalized ads. 
@@ -105,7 +105,7 @@
                         <p id="adStatus">Waiting for consent...</p>
                     </div>
 
-                    <!-- TEST AD (shows instantly) -->
+                    <!-- TEST AD (WILL SHOW AFTER ACCEPT) -->
                     <ins class="adsbygoogle"
                          style="display:block"
                          data-ad-client="ca-pub-4494471028788825"
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <div class="smartlink-ad" id="smartlinkAd">
+            <div class="smartlink-ad" id="smartlinkAd" style="display:none;">
                 <h4>Exclusive download Offer!</h4>
                 <p>Click to open special offer</p>
                 <small>Sponsored Content</small>
@@ -128,7 +128,7 @@
             </div>
         </div>
 
-        <div class="ad-verification" id="adVerification">
+        <div class="ad-verification" id="adVerification" style="display:none;">
             <h3>Advertisement Completed!</h3>
             <p>Thank you for watching. You can now continue.</p>
         </div>
@@ -145,35 +145,29 @@
 <script type='text/javascript' src='//pawsdefenseneigh.com/6e/da/e0/6edae05e34beb24ee86c93a008ce4c6f.js'></script>
 
 <script>
-// GDPR Consent System
+// === GDPR & ADSENSE SYSTEM ===
 let consent = { necessary: true, ads: false };
-const adLoading = document.getElementById('adLoading');
-const adStatus = document.getElementById('adStatus');
 const cookieBanner = document.getElementById('cookieBanner');
 const cookieSettings = document.getElementById('cookieSettings');
+const adLoading = document.getElementById('adLoading');
+const adStatus = document.getElementById('adStatus');
 
-// Check stored consent
-if (localStorage.getItem('cookieConsent')) {
-    consent = JSON.parse(localStorage.getItem('cookieConsent'));
-    if (consent.ads) loadAdSense();
+// === SHOW BANNER ON FIRST VISIT ===
+if (!localStorage.getItem('cookieConsent')) {
+    cookieBanner.style.display = 'block';
 } else {
-    // Auto-show banner for EU users
-    fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
-        const eu = ['DE','FR','IT','ES','NL','PL','RO','SE','AT','BE','BG','HR','CY','CZ','DK','EE','FI','GR','HU','IE','LV','LT','LU','MT','PT','SK','SI'];
-        if (eu.includes(data.country)) {
-            cookieBanner.style.display = 'block';
-        }
-    }).catch(() => cookieBanner.style.display = 'block'); // fallback
+    consent = JSON.parse(localStorage.getItem('cookieConsent'));
+    if (consent.ads) setTimeout(loadAdSense, 500);
 }
 
-// Banner Actions
+// === BANNER ACTIONS ===
 function acceptCookies() {
     consent.ads = true;
-    saveAndClose();
+    saveConsentAndLoad();
 }
 function rejectCookies() {
     consent.ads = false;
-    saveAndClose();
+    saveConsentAndLoad();
 }
 function openSettings() {
     document.getElementById('ads').checked = consent.ads;
@@ -186,38 +180,39 @@ function toggleAds() {
     consent.ads = document.getElementById('ads').checked;
 }
 function saveSettings() {
-    saveAndClose();
+    saveConsentAndLoad();
 }
-function saveAndClose() {
+function saveConsentAndLoad() {
     localStorage.setItem('cookieConsent', JSON.stringify(consent));
     cookieBanner.style.display = 'none';
     closeSettings();
     if (consent.ads) loadAdSense();
-    else showNonPersonalized();
+    else showNoAds();
 }
 
-// Load AdSense (Test Mode)
+// === LOAD TEST AD ===
 function loadAdSense() {
     adStatus.textContent = 'Loading test ad...';
-    if (typeof adsbygoogle !== 'undefined') {
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        const check = setInterval(() => {
-            const iframe = document.querySelector('.adsbygoogle iframe');
-            if (iframe && iframe.offsetHeight > 50) {
-                clearInterval(check);
-                adLoading.style.display = 'none';
-                statusText.textContent = "Test ad loaded! Watch 15s...";
-            }
-        }, 500);
+    if (typeof adsbygoogle === 'undefined') {
+        setTimeout(loadAdSense, 500);
+        return;
     }
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    const check = setInterval(() => {
+        const iframe = document.querySelector('.adsbygoogle iframe');
+        if (iframe && iframe.offsetHeight > 50) {
+            clearInterval(check);
+            adLoading.style.display = 'none';
+            statusText.textContent = "Test ad loaded! Watch 15s...";
+        }
+    }, 300);
 }
 
-function showNonPersonalized() {
-    adLoading.innerHTML = '<p>No personalized ads (GDPR)</p>';
-    adStatus.textContent = 'Non-personalized mode';
+function showNoAds() {
+    adLoading.innerHTML = '<p>No ads (GDPR rejected)</p>';
 }
 
-// Countdown & Ads
+// === COUNTDOWN ===
 let countdown = 15, countdownComplete = false;
 const countdownEl = document.getElementById('countdown');
 const progressBar = document.getElementById('progressBar');
@@ -245,6 +240,7 @@ function startCountdown(){
     },1000);
 }
 
+// === EXTRA ADS ===
 function autoOpenAdditionalAds(){
     setTimeout(()=>window.open('https://pawsdefenseneigh.com/qbvxk6dk0b?key=c140227bd5e84414446ad9cc52ac541a','_blank'),1000);
 }
@@ -258,12 +254,13 @@ continueBtn.onclick = ()=>{
     setTimeout(()=>{location.href='https://t4tsa.cc/'},1000);
 };
 
-// Start
+// === START ===
 window.addEventListener('load', () => {
     startCountdown();
     if (consent.ads) loadAdSense();
 });
 
+// Fallback
 setTimeout(()=>{
     if(!countdownComplete){
         countdownComplete=true;
