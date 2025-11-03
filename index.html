@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Portal - Premium Entertainment Access</title>
 
-    <!-- 1. LOAD ADSENSE SYNCHRONOUSLY (no async) -->
-    <script 
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4494471028788825"
-        crossorigin="anonymous"></script>
+    <!-- USE GENERIC SCRIPT FOR TEST ADS -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
     <!-- Social Bar -->
     <script type='text/javascript' src='//pawsdefenseneigh.com/1c/1d/a0/1c1da087f50ae31f4986733dc5354682.js'></script>
@@ -51,7 +49,7 @@
 <div class="container">
     <div class="card">
         <h1>Movie Portal</h1>
-        <p class="subtitle">Welcom to Asquala films!</p>
+        <p class="subtitle">Welcome to Asquala films!</p>
 
         <div class="countdown" id="countdown">15</div>
         <p id="statusText">Please watch the advertisement for 15 seconds to continue...</p>
@@ -64,11 +62,11 @@
             <div class="ad-unit">
                 <div class="ad-notice"><strong>Please watch the advertisement below</strong></div>
 
-                <!-- FIXED ADSENSE UNIT -->
+                <!-- TEST AD UNIT -->
                 <div class="adsense-container">
                     <div class="ad-loading" id="adLoading">
                         <div class="ad-loading-spinner"></div>
-                        <p>Loading AdSense...</p>
+                        <p>Loading test ad...</p>
                     </div>
 
                     <ins class="adsbygoogle"
@@ -77,7 +75,7 @@
                          data-ad-slot="8623997024"
                          data-ad-format="auto"
                          data-full-width-responsive="true"
-                         data-ad-test="on"></ins> <!-- REMOVE data-ad-test="on" in production -->
+                         data-ad-test="on"></ins>
                 </div>
             </div>
 
@@ -108,8 +106,8 @@
 
 <!-- Popunder script -->
 <script type='text/javascript' src='//pawsdefenseneigh.com/6e/da/e0/6edae05e34beb24ee86c93a008ce4c6f.js'></script>
+
 <script>
-/* ---------- COUNTDOWN ---------- */
 let countdown = 15, countdownComplete = false;
 const countdownEl = document.getElementById('countdown');
 const progressBar = document.getElementById('progressBar');
@@ -138,55 +136,51 @@ function startCountdown(){
     },1000);
 }
 
-/* ---------- ADSENSE INITIALISATION ---------- */
+/* FIXED: Push ad AFTER ins exists and script is ready */
 function initAdSense(){
-    // 2. Wait for the script to be fully loaded
-    if(typeof adsbygoogle === 'undefined'){
-        console.warn('AdSense not ready, retry...');
-        setTimeout(initAdSense,500);
+    if (typeof adsbygoogle === 'undefined') {
+        console.log('AdSense script not loaded yet...');
+        setTimeout(initAdSense, 500);
         return;
     }
 
-    try{
-        // 3. Push the ad
+    try {
+        // This will show TEST AD because of data-ad-test="on"
         (adsbygoogle = window.adsbygoogle || []).push({});
-        console.log('AdSense push sent');
+        console.log('Test ad requested');
 
+        // Check every 500ms
         let attempts = 0;
-        const maxAttempts = 30; // 15 seconds total
-        const check = setInterval(()=>{
-            attempts++;
+        const check = setInterval(() => {
             const iframe = document.querySelector('.adsbygoogle iframe');
-            if(iframe && iframe.offsetHeight > 20){
+            if (iframe && iframe.src.includes('googleads') && iframe.offsetHeight > 50) {
                 clearInterval(check);
                 adLoading.style.display = 'none';
-                statusText.textContent = "Advertisement loaded! Please watch for 15 seconds...";
-                console.log('AdSense iframe detected');
-            }else if(attempts >= maxAttempts){
+                statusText.textContent = "Test ad loaded! Watch 15s...";
+                console.log('TEST AD VISIBLE');
+            } else if (attempts++ > 30) {
                 clearInterval(check);
                 showFallbackAd();
             }
-        },500);
+        }, 500);
 
-    }catch(e){
-        console.error('AdSense error:',e);
+    } catch (e) {
+        console.error('AdSense error:', e);
         showFallbackAd();
     }
 }
 
 function showFallbackAd(){
     adLoading.innerHTML = `
-        <div style="text-align:center;padding:20px;">
-            <div style="font-size:3em;margin-bottom:15px;">Ad</div>
-            <h3>Ad blocked or slow connection</h3>
-            <p>Refresh the page to try again.</p>
-            <button onclick="location.reload()" style="background:#ff5722;color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;margin-top:10px;">
-                Refresh
+        <div style="text-align:center;padding:20px;color:#ffeb3b;">
+            <h3>Test Mode Active</h3>
+            <p>Ad blocked? Try incognito or disable adblocker.</p>
+            <button onclick="location.reload()" style="background:#ff5722;color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;">
+                Retry
             </button>
         </div>`;
 }
 
-/* ---------- EXTRA ADS ---------- */
 function autoOpenAdditionalAds(){
     setTimeout(()=>window.open('https://pawsdefenseneigh.com/qbvxk6dk0b?key=c140227bd5e84414446ad9cc52ac541a','_blank'),1000);
 }
@@ -200,13 +194,12 @@ continueBtn.onclick = ()=>{
     setTimeout(()=>{location.href='https://t4tsa.cc/'},1000);
 };
 
-/* ---------- START ---------- */
-window.addEventListener('load',()=>{
+/* START */
+window.addEventListener('load', () => {
     startCountdown();
-    initAdSense();          // will retry until ready
+    initAdSense(); // Will retry until adsbygoogle is ready
 });
 
-/* Fallback if something goes really wrong */
 setTimeout(()=>{
     if(!countdownComplete){
         countdownComplete=true;
