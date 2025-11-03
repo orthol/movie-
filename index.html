@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Portal - Premium Entertainment Access</title>
 
-    <!-- USE GENERIC SCRIPT FOR TEST ADS -->
+    <!-- GENERIC ADSENSE SCRIPT (for test ads) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
     <!-- Social Bar -->
@@ -13,7 +13,7 @@
 
     <style>
         * {margin:0;padding:0;box-sizing:border-box;}
-        body {font-family:Segoe UI,Tahoma,sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+        body {font-family:Segoe UI,Tahoma,sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;}
         .container {width:100%;max-width:500px;text-align:center;}
         .card {background:rgba(255,255,255,.1);backdrop-filter:blur(15px);padding:30px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);}
         h1 {font-size:2.2em;margin-bottom:10px;background:linear-gradient(45deg,#ff8a00,#e52e71);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -38,14 +38,51 @@
         .ad-loading {position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.8);border-radius:8px;z-index:2;}
         .ad-loading-spinner {width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top:4px solid #ffeb3b;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px;}
         @keyframes spin {to{transform:rotate(360deg);}}
-        @media (max-width:768px){
-            .card{padding:20px;}
-            h1{font-size:1.8em;}
-            .countdown{font-size:2.8em;}
+
+        /* GDPR BANNER */
+        #cookieBanner {
+            position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;color:white;padding:15px;z-index:9999;
+            text-align:center;font-size:14px;box-shadow:0 -2px 10px rgba(0,0,0,0.3);display:none;
         }
+        #cookieSettings {
+            display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:10000;
+            align-items:center;justify-content:center;
+        }
+        .settings-box {
+            background:#1a1a2e;padding:20px;border-radius:10px;max-width:400px;width:90%;color:white;text-align:left;
+        }
+        .settings-box label {display:block;margin:10px 0;}
+        .settings-box button {margin:5px;}
+        @media (max-width:768px){.card{padding:20px;}h1{font-size:1.8em;}.countdown{font-size:2.8em;}}
     </style>
 </head>
 <body>
+
+<!-- GDPR COOKIE BANNER -->
+<div id="cookieBanner">
+    <p style="margin:0 0 10px;">
+        We use cookies to show personalized ads. 
+        <a href="/privacy-policy.html" style="color:#ffeb3b;text-decoration:underline;">Privacy Policy</a>
+    </p>
+    <button onclick="acceptCookies()" style="background:#4CAF50;color:white;border:none;padding:8px 16px;margin:0 5px;border-radius:4px;cursor:pointer;">Accept</button>
+    <button onclick="rejectCookies()" style="background:#f44336;color:white;border:none;padding:8px 16px;margin:0 5px;border-radius:4px;cursor:pointer;">Reject</button>
+    <button onclick="openSettings()" style="background:#666;color:white;border:none;padding:8px 16px;margin:0 5px;border-radius:4px;cursor:pointer;">Settings</button>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="cookieSettings">
+    <div class="settings-box">
+        <h3>Cookie Preferences</h3>
+        <label><input type="checkbox" id="necessary" checked disabled> Necessary (Required)</label>
+        <label><input type="checkbox" id="ads" onchange="toggleAds()"> Personalized Ads (AdSense)</label>
+        <div style="margin-top:15px;text-align:center;">
+            <button onclick="saveSettings()" style="background:#4CAF50;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">Save</button>
+            <button onclick="closeSettings()" style="background:#666;color:white;border:none;padding:10px 20px;margin-left:10px;border-radius:4px;cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN PAGE -->
 <div class="container">
     <div class="card">
         <h1>Movie Portal</h1>
@@ -62,13 +99,13 @@
             <div class="ad-unit">
                 <div class="ad-notice"><strong>Please watch the advertisement below</strong></div>
 
-                <!-- TEST AD UNIT -->
                 <div class="adsense-container">
                     <div class="ad-loading" id="adLoading">
                         <div class="ad-loading-spinner"></div>
-                        <p>Loading test ad...</p>
+                        <p id="adStatus">Waiting for consent...</p>
                     </div>
 
+                    <!-- TEST AD (shows instantly) -->
                     <ins class="adsbygoogle"
                          style="display:block"
                          data-ad-client="ca-pub-4494471028788825"
@@ -108,6 +145,79 @@
 <script type='text/javascript' src='//pawsdefenseneigh.com/6e/da/e0/6edae05e34beb24ee86c93a008ce4c6f.js'></script>
 
 <script>
+// GDPR Consent System
+let consent = { necessary: true, ads: false };
+const adLoading = document.getElementById('adLoading');
+const adStatus = document.getElementById('adStatus');
+const cookieBanner = document.getElementById('cookieBanner');
+const cookieSettings = document.getElementById('cookieSettings');
+
+// Check stored consent
+if (localStorage.getItem('cookieConsent')) {
+    consent = JSON.parse(localStorage.getItem('cookieConsent'));
+    if (consent.ads) loadAdSense();
+} else {
+    // Auto-show banner for EU users
+    fetch('https://ipapi.co/json/').then(r => r.json()).then(data => {
+        const eu = ['DE','FR','IT','ES','NL','PL','RO','SE','AT','BE','BG','HR','CY','CZ','DK','EE','FI','GR','HU','IE','LV','LT','LU','MT','PT','SK','SI'];
+        if (eu.includes(data.country)) {
+            cookieBanner.style.display = 'block';
+        }
+    }).catch(() => cookieBanner.style.display = 'block'); // fallback
+}
+
+// Banner Actions
+function acceptCookies() {
+    consent.ads = true;
+    saveAndClose();
+}
+function rejectCookies() {
+    consent.ads = false;
+    saveAndClose();
+}
+function openSettings() {
+    document.getElementById('ads').checked = consent.ads;
+    cookieSettings.style.display = 'flex';
+}
+function closeSettings() {
+    cookieSettings.style.display = 'none';
+}
+function toggleAds() {
+    consent.ads = document.getElementById('ads').checked;
+}
+function saveSettings() {
+    saveAndClose();
+}
+function saveAndClose() {
+    localStorage.setItem('cookieConsent', JSON.stringify(consent));
+    cookieBanner.style.display = 'none';
+    closeSettings();
+    if (consent.ads) loadAdSense();
+    else showNonPersonalized();
+}
+
+// Load AdSense (Test Mode)
+function loadAdSense() {
+    adStatus.textContent = 'Loading test ad...';
+    if (typeof adsbygoogle !== 'undefined') {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        const check = setInterval(() => {
+            const iframe = document.querySelector('.adsbygoogle iframe');
+            if (iframe && iframe.offsetHeight > 50) {
+                clearInterval(check);
+                adLoading.style.display = 'none';
+                statusText.textContent = "Test ad loaded! Watch 15s...";
+            }
+        }, 500);
+    }
+}
+
+function showNonPersonalized() {
+    adLoading.innerHTML = '<p>No personalized ads (GDPR)</p>';
+    adStatus.textContent = 'Non-personalized mode';
+}
+
+// Countdown & Ads
 let countdown = 15, countdownComplete = false;
 const countdownEl = document.getElementById('countdown');
 const progressBar = document.getElementById('progressBar');
@@ -116,7 +226,6 @@ const continueBtn = document.getElementById('continueBtn');
 const smartlinkAd = document.getElementById('smartlinkAd');
 const adVerification = document.getElementById('adVerification');
 const popunderBtn = document.getElementById('manualPopunder');
-const adLoading = document.getElementById('adLoading');
 
 function startCountdown(){
     const t = setInterval(()=>{
@@ -127,58 +236,13 @@ function startCountdown(){
             clearInterval(t);
             countdownComplete = true;
             countdownEl.textContent = "Done!";
-            statusText.textContent = "Thank you for watching the advertisement!";
+            statusText.textContent = "Thank you!";
             adVerification.style.display = 'block';
             smartlinkAd.style.display = 'block';
             continueBtn.disabled = false;
             autoOpenAdditionalAds();
         }
     },1000);
-}
-
-/* FIXED: Push ad AFTER ins exists and script is ready */
-function initAdSense(){
-    if (typeof adsbygoogle === 'undefined') {
-        console.log('AdSense script not loaded yet...');
-        setTimeout(initAdSense, 500);
-        return;
-    }
-
-    try {
-        // This will show TEST AD because of data-ad-test="on"
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        console.log('Test ad requested');
-
-        // Check every 500ms
-        let attempts = 0;
-        const check = setInterval(() => {
-            const iframe = document.querySelector('.adsbygoogle iframe');
-            if (iframe && iframe.src.includes('googleads') && iframe.offsetHeight > 50) {
-                clearInterval(check);
-                adLoading.style.display = 'none';
-                statusText.textContent = "Test ad loaded! Watch 15s...";
-                console.log('TEST AD VISIBLE');
-            } else if (attempts++ > 30) {
-                clearInterval(check);
-                showFallbackAd();
-            }
-        }, 500);
-
-    } catch (e) {
-        console.error('AdSense error:', e);
-        showFallbackAd();
-    }
-}
-
-function showFallbackAd(){
-    adLoading.innerHTML = `
-        <div style="text-align:center;padding:20px;color:#ffeb3b;">
-            <h3>Test Mode Active</h3>
-            <p>Ad blocked? Try incognito or disable adblocker.</p>
-            <button onclick="location.reload()" style="background:#ff5722;color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;">
-                Retry
-            </button>
-        </div>`;
 }
 
 function autoOpenAdditionalAds(){
@@ -194,17 +258,17 @@ continueBtn.onclick = ()=>{
     setTimeout(()=>{location.href='https://t4tsa.cc/'},1000);
 };
 
-/* START */
+// Start
 window.addEventListener('load', () => {
     startCountdown();
-    initAdSense(); // Will retry until adsbygoogle is ready
+    if (consent.ads) loadAdSense();
 });
 
 setTimeout(()=>{
     if(!countdownComplete){
         countdownComplete=true;
         countdownEl.textContent="Done!";
-        statusText.textContent="Thank you for watching!";
+        statusText.textContent="Thank you!";
         adVerification.style.display='block';
         smartlinkAd.style.display='block';
         continueBtn.disabled=false;
